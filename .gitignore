@@ -1,3 +1,8 @@
+# ignore sensitive config files
+token.js*
+mongodb_config.js*
+id-config.js*
+
 # Logs
 logs
 *.log

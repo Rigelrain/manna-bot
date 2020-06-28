@@ -1,0 +1,31 @@
+{
+  "name": "pledgebot",
+  "version": "1.0.0",
+  "description": "Discord.js bot for asking for donations/crowdfunding and pledging for them.",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rigelrain/PledgeBot.git"
+  },
+  "keywords": [
+    "discord",
+    "bot"
+  ],
+  "author": "Sade Sirén",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/Rigelrain/PledgeBot/issues"
+  },
+  "homepage": "https://github.com/Rigelrain/PledgeBot#readme",
+  "devDependencies": {
+    "eslint": "^7.3.1"
+  },
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "mongoose": "^5.9.20"
+  }
+}
