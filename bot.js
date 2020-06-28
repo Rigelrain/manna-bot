@@ -20,6 +20,7 @@ mongoose.connect(mongoURL, { // options below
     useNewUrlParser: true, 
     useUnifiedTopology: true, 
     dbName: mongoDBname, useCreateIndex: true,
+    useFindAndModify: false,
 })
     .then(() => {
         console.log('[ START ] Database connected')
