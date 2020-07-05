@@ -1,5 +1,5 @@
 const info = require('../config/botinfo')
-const base = require('./setrole')
+const base = require('./setrole').execute
 const helper = require('../js/helpers')
 
 /**
@@ -27,7 +27,7 @@ const options = {
 
 async function execute(message, args) { 
     const baseArgs = ['moderator', ...args]
-    base.execute(message, baseArgs)
+    base(message, baseArgs)
         .catch(e => {
             helper.replyGeneralError(message, e)
         })

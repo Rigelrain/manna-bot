@@ -19,4 +19,17 @@ module.exports = {
     - It's best practice to give the bot some specific role that you can use to limit the channels the bot can use. Ex. make a DonationBot role that can only access channel #donations.
     - Bot needs *at least* 'Read messages', 'Send messages' and 'Manage messages' permissions for the channel(s) it is supposed to operate in. The manage messages is needed so that the bot can delete the command messages (to keep the channel cleaner) and edit past donations.
     - The bot has no control over how the donations are actually given to the requester. Requester is notified on who pledged and for how much. It is recommended these be handled via DMs.`,
+    requests: `Requests have a type and amount/description.
+    Type is loosely the unit of the request. If you request 3 hugs, the type is 'hugs'. If you request passionate kiss, the type is 'kiss'. By default you can use any type, but the server might choose to limit these to specific types of donations allowed on the server. The type has to be the last word in your command.
+    The amount is simple, it's simply the quantity of the requested item/service. If left blank, by default you are requesting one (1) item/service.
+    You can also give a description (quality). This is a free form text describing any details of your request.
+    Example1: 
+    \`3 hugs\` --> will create a request:
+    \`@Manna requests 3 hugs!\`
+    Example2:
+    \`passionate kiss\` --> will create a request:
+    \`@Manna requests 1 kiss! Needs: passionate\`
+    Example3:
+    \`5 blue in a flower pot roses\` --> will create a request:
+    \`@Manna requests 5 roses! Needs: blue in a flower pot\``,
 }
