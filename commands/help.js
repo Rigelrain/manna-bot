@@ -81,8 +81,6 @@ async function execute(message, args) {
                     }
                 }
     
-                console.log(`Helpstring: ${helpStr}`)
-    
                 helpEmbed.addField(`**${cmd.name}**` + (cmd.aliases ? ', ' + cmd.aliases.join(', ') : ''), helpStr)
             }
         })

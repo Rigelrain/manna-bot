@@ -12,6 +12,7 @@ const mongoURL = process.env.DBPATH || require('./config/mongodb_config').path
 const mongoDBname = process.env.DBNAME || require('./config/mongodb_config').dbname
 
 const helper = require('./js/helpers')
+const db = require('./js/db')
 
 // == DATABASE
 const mongoose = require('mongoose')
@@ -51,17 +52,17 @@ client.once('ready', () => {
     console.log('[ START ] Ready.')
 })
 
-client.on('message', message => {
+client.on('message', async message => {
 
     //   ===   CHECK MESSAGE VALIDITY   ===
 
     // TODO fetch server info from DB
-    // - server prefix
-    const serverPrefix = undefined
-    // - server allowed channels
-    const serverChannels = undefined
-    // - server allowed roles
-    const serverRoles = undefined
+    const serverData = await db.getServerData(message.guild.id)
+    let serverPrefix, serverRoles
+    if(serverData) {
+        serverPrefix = serverData.prefix
+        serverRoles = serverData.roles
+    }
 
     // ignore messages that dont start with a valid prefix
     if(!message.content.startsWith(serverPrefix || config.prefix)) { return }
@@ -71,9 +72,6 @@ client.on('message', message => {
 
     // ignore DMs
     if(message.channel.type !== 'text') { return }
-
-    // ignore messages not in specified channels, if given
-    if(serverChannels && !serverChannels.includes(message.channel.id)) { return }
 
     // turn message into array
     const args = message.content.trim().slice(config.prefix.length).split(/ +/)

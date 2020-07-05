@@ -24,6 +24,7 @@ module.exports = {
         case 'moderator':
             if(serverRoles 
                 && serverRoles.moderator
+                && serverRoles.moderator.length > 0
                 && member.roles.some(r => serverRoles.moderator.includes(r.id))) {
                 // Check if they have one of many roles
                 // has one of the roles
@@ -34,6 +35,7 @@ module.exports = {
         case 'requester':
             if(!serverRoles 
                 || !serverRoles.requester 
+                || serverRoles.requester.length == 0
                 || member.roles.some(r => serverRoles.requester.includes(r.id))) {
                 //console.log('[ DEBUG ] Allowing access for requester.')
                 roleMatch = true
@@ -42,6 +44,7 @@ module.exports = {
         case 'pledger':
             if(!serverRoles 
                 || !serverRoles.pledger 
+                || serverRoles.pledger.length == 0
                 || member.roles.some(r => serverRoles.pledger.includes(r.id))) {
                 //console.log('[ DEBUG ] Allowing access for pledger.')
                 roleMatch = true
