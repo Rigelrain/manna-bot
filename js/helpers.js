@@ -91,27 +91,57 @@ module.exports = {
 
         throw 'Do you want to add or remove?'
     },
+    getProgress(current, max) {
+        if(max == 0) return '' // divide by zero guard
+        const progress = (current / max ) * 10
+
+        let progressStr = '['
+        for(let i = 0; i < progress; i++) {
+            progressStr += '+'
+        }
+        for(let i = progress; i < 10; i++) {
+            progressStr += '_'
+        }
+        progressStr += ']'
+
+        return progressStr
+    },
     replyGeneralError(message, err) {
         console.log(`[ ERROR ] ${JSON.stringify(err, null, 2)}`)
         const errEmbed = new Discord.MessageEmbed().setColor(config.colors.error)
             .setTitle('Oops!')
             .setDescription('Something went wrong with this command...')
-        return message.channel.send(errEmbed)
+        message.channel.send(errEmbed)
+        message.delete({timeout: 1000})
+        return
     },
-    replyCustomError(message, title, description, err) {
+    async replyCustomError(message, title, description, err) {
         if(err) {
             console.log(`[ ERROR ] ${err}`)
         }
         const errEmbed = new Discord.MessageEmbed().setColor(config.colors.error)
             .setTitle(title? title : 'Oops!')
             .setDescription(description? description : '')
-        return message.channel.send(errEmbed)
+        const reply = await message.channel.send(errEmbed)
+        message.delete({timeout: 5000})
+        reply.delete({timeout: 5000})
+        return
     },
-    replySuccess(message, title, description) {
+    /**
+     * Send a a success-color embed, which will be deleted after 5secs.  
+     * The command will be deleted after 1 sec.
+     * @param {*} message 
+     * @param {*} title 
+     * @param {*} description 
+     */
+    async replySuccess(message, title, description) {
         const replyEmbed = new Discord.MessageEmbed().setColor(config.colors.success)
             .setTitle(title? title : 'Success!')
             .setDescription(description? description : '')
-        return message.channel.send(replyEmbed)
+        const reply = await message.channel.send(replyEmbed)
+        message.delete({timeout: 1000})
+        reply.delete({timeout: 5000})
+        return
     },
     replyToChannel(message, channelID, title, description) {
         const queueEmbed = new Discord.MessageEmbed().setColor(config.colors.success)

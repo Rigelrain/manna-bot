@@ -1,8 +1,7 @@
-const info = require('../config/botinfo')
-const config = require('../config/config')
-const Discord = require('discord.js')
-const Request = require('../schemas/request')
+//const config = require('../config/config')
+// const Discord = require('discord.js')
 const helper = require('../js/helpers')
+const db = require('../js/db')
 
 /**
  * Request for a donation
@@ -13,7 +12,7 @@ const options = {
     name: 'pledge',
     aliases: ['donate', 'giveto'],
 
-    description: 'Offer to donate.',
+    description: 'Offer to donate. Give amount as a number or `all` if you will donate the max remaining amount',
     minArgs: 1,
     usage: '<user> [amount]',
     
@@ -25,77 +24,108 @@ const options = {
 }
 
 async function execute(message, args) {
-    const requester = message.mentions.users[0]
-    console.log(`[ DEBUG ] ${message.author} wants to donate to ${requester}`)
 
-    
-
-    const reqtype = args.pop().toLowerCase()
-
-    if(message.requesttypes.length > 0 && !message.requesttypes.includes(reqtype)) {
-        return helper.replyCustomError(message, 'Invalid request type', 'You can check the valid requests types with command `check`')
+    //// Who to give to?
+    if(!message.mentions.users.size) {
+        return helper.replyCustomError(message, 'You must name a user', `Mention the user in your pledge message, see usage: ${message.prefix}${options.name} ${options.usage}`)
     }
-
-    let amount, description
-
-    if(isNaN(parseInt(args[0]))) {
-        // whole rest of args is description
-        amount = 1
-        console.log(`[ DEBUG ] current args: ${args}`)
-        description = args.join(' ')
+    const requester = message.mentions.users.first()
+    if(!requester) {
+        // TODO this might be redundant
+        return helper.replyCustomError(message, 'You must name a valid user', `Mention the user in your pledge message, see usage: ${message.prefix}${options.name} ${options.usage}`)
     }
-    else {
-        console.log(`[ DEBUG ] current args: ${args}, typeof args = array? ${Array.isArray(args)}, args length = ${args.length}`)
+    console.log(`[ DEBUG ] ${message.author} wants to donate to ${requester} (id ${requester.id})`)
+    //// END User
 
-        amount = parseInt(args.shift())
+    //// Get the request from DB
+    const req = await db.getRequestData(requester.id)
+    //// END DB
 
-        if(args.length == 1) {
-            console.log(`[ DEBUG ] only arg: ${args[0]}`)
-            description = args[0]
-        }
-        else if(args.length > 1) {
-            console.log(`[ DEBUG ] current args: ${args}`)
-            description = args.join(' ')
-        }
-    }
-
-    console.log(`[ DEBUG ] new request: 
-    For ${message.author.id}
-    Type: ${reqtype}
-    Amount: ${amount}
-    Details: ${description}`)
-
-    const reqEmbed = new Discord.MessageEmbed()
-        .setColor(config.colors.success)
-        .setTitle(`Request for ${amount? amount : ''} ${reqtype}`)
-        .setDescription(`For who? --> ${message.author}`)
-    
-    if(description) {
-        reqEmbed.addField('Details', description)
-    }
-
-    const reply = await message.channel.send(reqEmbed)
-    console.log(`[ DEBUG ] reply message id: ${reply.id}`)
-
-    const reqDocument = {
-        serverID: message.guild.id,
-        userID: message.author.id,
-        messageID: reply.id,
-        request: {
-            type: reqtype,
-            amount: amount,
-        },
-    }
-
-    console.log(reqDocument)
+    //// How much to give?
+    let amount, amountFound = false
 
     try {
-        await Request.create(reqDocument)
+        const remainingAmount = req.remaining // hardcode for now
+    
+        for(let i = 0; i < args.length; i++) {
+            const arg = args[i]
+            if(isNaN(parseInt(arg))) {
+                if(arg == 'full') {
+                    amountFound = true
+                    amount = remainingAmount
+                    break
+                }
+            }
+            else {
+                amount = parseInt(arg)
+                if(amount > remainingAmount) amount = remainingAmount
+                amountFound = true
+                break
+            }   
+        }
+    
+        if(!amountFound) {
+            return helper.replyCustomError(message, 'Invalid amount', `Please give the amount as a number or 'full', see usage: ${message.prefix}${options.name} ${options.usage}`)
+        }
+    
+        console.log(`[ DEBUG ] Wants to donate amount of ${amount}`)
     }
     catch(e) {
-        console.log(`[ ERROR ] Error in saving request to DB:
-        ${e}`)
+        throw `Could not get the right amount: ${e.message}`
     }
+    //// END amount
+
+    //// Updating the document in DB
+    const update = await db.updateRequest(req._id, req.remaining - amount)
+    //// END DB
+
+    //// Updating the original message to include the pledger and progress
+    try {
+        const reqMsg = await message.channel.messages.fetch(update.messageID)
+        const reqEmbed = reqMsg.embeds[0]
+
+        //console.log(reqEmbed)
+
+        if(reqEmbed.fields.length > 0) {
+            // there's a previous 'Still looking...' field
+            // so remove it
+            reqEmbed.fields.pop()
+        }
+
+        reqEmbed.fields.push({
+            name: `Donation of ${amount} ${update.type}`,
+            value: `from ${message.author}!`,
+            inline: false,
+        })
+        reqEmbed.fields.push({
+            name: update.remaining == 0? 'Request fulfilled!' : `Still looking for ${update.remaining} ${update.type}`,
+            value: 'Progress:',
+            inline: false,
+        })
+        if(!reqEmbed.footer) reqEmbed.footer = {} // for first donation
+        reqEmbed.footer.text = helper.getProgress(update.amount - update.remaining, update.amount)
+
+        //console.log(reqEmbed)
+
+        await reqMsg.edit(reqEmbed)
+
+        //// END request msg update
+
+        //// Handle request fullfilment
+        if(update.remaining == 0) {
+            console.log('[ DEBUG ] Request fulfilled!')
+            await db.deleteRequest(req._id)
+            // TODO DM the requester that the request is filled, link to msg?
+            requester.send(`Your request was fulfilled! Check ${message.channel}`)
+            requester.send(reqEmbed)
+        }
+        //// END fullfil
+    }
+    catch(e) {
+        console.log(`[ ERROR ] ${e}`)
+    }
+
+    return helper.replySuccess(message, 'Donation succeeded!', `You've offered to give ${requester} ${amount} ${req.type}`)
 }
 
 module.exports = options

@@ -55,28 +55,27 @@ client.once('ready', () => {
 client.on('message', async message => {
 
     //   ===   CHECK MESSAGE VALIDITY   ===
-
-    // TODO fetch server info from DB
-    const serverData = await db.getServerData(message.guild.id)
-    let serverPrefix, serverRoles
-    if(serverData) {
-        serverPrefix = serverData.prefix
-        serverRoles = serverData.roles
-    }
-    // - server's allowed request types
-    const serverReqTypes = undefined
-
-    // ignore messages that dont start with a valid prefix
-    if(!message.content.startsWith(serverPrefix || config.prefix)) { return }
-
     // ignore bot messages
     if(message.author.bot) { return }
 
     // ignore DMs
     if(message.channel.type !== 'text') { return }
 
+    // TODO fetch server info from DB
+    const serverData = await db.getServerData(message.guild.id)
+    let serverPrefix, serverRoles, serverReqTypes
+    if(serverData) {
+        serverPrefix = serverData.prefix
+        serverRoles = serverData.roles
+        serverReqTypes = serverData.requesttypes
+    }
+    const prefix = serverPrefix? serverPrefix : config.prefix
+
+    // ignore messages that dont start with a valid prefix
+    if(!message.content.startsWith(prefix)) { return }
+
     // turn message into array
-    const args = message.content.trim().slice(config.prefix.length).split(/ +/)
+    const args = message.content.trim().slice(prefix.length).split(/ +/)
 
     // pull first word (the command) out
     const commandName = args.shift().toLowerCase()

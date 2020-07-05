@@ -61,7 +61,8 @@ Sensitive tokens should be saved into Heroku Dashboard in Config Vars. In code t
     messageID: String, // ID of the message of the request (bot-made)
     request: {
         type: String, // request type (allowed types can be set by server)
-        amount: Number, // how much needed
+        amount: Number, // how much needed total
+        remaining: Number, // how much is left unpledged
     },
 }
 ```

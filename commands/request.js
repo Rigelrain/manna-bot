@@ -1,7 +1,7 @@
 const info = require('../config/botinfo')
 const config = require('../config/config')
 const Discord = require('discord.js')
-const Request = require('../schemas/request')
+const db = require('../js/db')
 const helper = require('../js/helpers')
 
 /**
@@ -27,6 +27,11 @@ const options = {
 }
 
 async function execute(message, args) {
+    // check that the user doesn't already have a pending request
+    if(await db.getRequestData(message.author.id)) {
+        return helper.replyCustomError(message, 'You already have a request pending', 'Please cancel your previous request before starting a new one')
+    }
+
     const reqtype = args.pop().toLowerCase()
 
     if(message.requesttypes.length > 0 && !message.requesttypes.includes(reqtype)) {
@@ -56,38 +61,35 @@ async function execute(message, args) {
         }
     }
 
-    console.log(`[ DEBUG ] new request: 
-    For ${message.author.id}
-    Type: ${reqtype}
-    Amount: ${amount}
-    Details: ${description}`)
-
     const reqEmbed = new Discord.MessageEmbed()
         .setColor(config.colors.success)
         .setTitle(`Request for ${amount? amount : ''} ${reqtype}`)
-        .setDescription(`For who? --> ${message.author}`)
+        .setDescription(`For who? --> ${message.author}${description? '\n**Details:' + description : ''}`)
+        .setFooter('')
     
-    if(description) {
-        reqEmbed.addField('Details', description)
-    }
+    // NOTE! The fresh request should not have any fields, since
+    // pledge will check the amount fields to know if it should
+    // add a progress title (as a field)
 
     const reply = await message.channel.send(reqEmbed)
-    console.log(`[ DEBUG ] reply message id: ${reply.id}`)
+    message.delete({timeout: 1000})
 
     const reqDocument = {
         serverID: message.guild.id,
         userID: message.author.id,
         messageID: reply.id,
-        request: {
-            type: reqtype,
-            amount: amount,
-        },
+        type: reqtype,
+        amount: amount,
+        remaining: amount,
     }
 
-    console.log(reqDocument)
-
     try {
-        await Request.create(reqDocument)
+        const newRequest = await db.newRequest(reqDocument)
+        console.log(`[ DEBUG ] new request: 
+        For ${newRequest.userID}
+        Type: ${newRequest.type}
+        Amount: ${newRequest.amount}
+        Details: ${description}`)
     }
     catch(e) {
         console.log(`[ ERROR ] Error in saving request to DB:
