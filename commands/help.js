@@ -90,7 +90,9 @@ async function execute(message, args) {
     }
 
     helpEmbed.setAuthor(title? title : 'Bot Help', message.client.user.displayAvatarURL)
-    helpEmbed.setFooter('from Rigelrain bot factory', '') // TODO add a PNG image link in here
+    helpEmbed.setThumbnail('https://i.imgur.com/kv48dQf.png')
+    helpEmbed.setDescription('see [GitHub for more info](https://github.com/Rigelrain/PledgeBot)')
+    helpEmbed.setFooter('from Rigelrain bot factory') // TODO add a PNG image link in here
 
     message.channel.send(helpEmbed)
 }

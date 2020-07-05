@@ -13,4 +13,4 @@ const requestSchema = new Schema({
 
 requestSchema.index({serverID: 1})
 
-module.exports = mongoose.model('Server', requestSchema)
+module.exports = mongoose.model('Request', requestSchema)

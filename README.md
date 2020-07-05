@@ -4,19 +4,30 @@ Discord.js bot for asking for donations/crowdfunding and pledging for them.
 ## Setup
 Main file is `bot.js`.  `npm start` will start the bot.
 
-Configuration files are under `/config`.
+Configuration files are under `/config`. Note that local bot token and Mongo config should only be used in local development phase and are not suitable to be used if your bot is hosted in the cloud! You should never save this kind of sensitive data as a file in the cloud, only as process variables.
 
-### Discord Access configuration
+### Discord Access configuration (for local development)
 
 Bot token goes in `token.js`. Create if not present:
 ```
-{
-  "token": "TOKEN HERE"
+module.exports = {
+  token: 'TOKEN HERE'
+}
+```
+
+### MongoDB configuration (for local development)
+MongoDB details go into `mongodb_config.js`. Create if not present:
+```
+module.exports = {
+    path: 'FULL MONGODB URL HERE',
+    dbname: 'NAME OF THE DATABASE HERE',
 }
 ```
 
 ### Server-specific configurations
-Information about the server's configuration (channel IDs, role IDs etc.) are given to the bot when it is invited to a server. User must have `manage server` permissions to use this command. Without a complete setting the bot will not work.
+Information about the server's configuration (prefix, role IDs etc.) are given to the bot when it is invited to a server. User must have `manage server` permissions to use this command.
+
+It is recommended that you limit the bot's access to specific channel(s) on your server. Make a specific role for this bot, give it permissions to send and manage messages but *not read* on the server level. Then only allow this role to read the channels you want the bot to operate on.
 
 ## Deployment
 This bot is configured to be deployed to Heroku.

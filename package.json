@@ -1,5 +1,5 @@
 {
-  "name": "pledgebot",
+  "name": "manna",
   "version": "1.0.0",
   "description": "Discord.js bot for asking for donations/crowdfunding and pledging for them.",
   "main": "bot.js",
@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/Rigelrain/PledgeBot#readme",
   "devDependencies": {
-    "eslint": "^7.3.1"
+    "eslint": "^7.4.0"
   },
   "dependencies": {
     "discord.js": "^12.2.0",

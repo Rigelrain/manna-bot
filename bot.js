@@ -63,6 +63,8 @@ client.on('message', async message => {
         serverPrefix = serverData.prefix
         serverRoles = serverData.roles
     }
+    // - server's allowed request types
+    const serverReqTypes = undefined
 
     // ignore messages that dont start with a valid prefix
     if(!message.content.startsWith(serverPrefix || config.prefix)) { return }
@@ -123,6 +125,7 @@ client.on('message', async message => {
     // == ACTUAL COMMAND CALL ==
     message.serverRoles = serverRoles // save the roles so that commands can use them too
     message.prefix = serverPrefix? serverPrefix : config.prefix // save prefix so that commands can use them too
+    message.requesttypes = serverReqTypes? serverReqTypes : []
     command.execute(message, args)
         .catch(err => {
             helper.replyGeneralError(message, err)
