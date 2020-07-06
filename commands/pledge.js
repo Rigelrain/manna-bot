@@ -27,7 +27,7 @@ async function execute(message, args) {
 
     //// Who to give to?
     if(!message.mentions.users.size) {
-        return helper.replyCustomError(message, 'You must name a user', `Mention the user in your pledge message, see usage: ${message.prefix}${options.name} ${options.usage}`)
+        return helper.replyCustomError(message, 'Who are you donating to?', `Mention the user in your pledge message, see usage: ${message.prefix}${options.name} ${options.usage}`)
     }
     const requester = message.mentions.users.first()
     if(!requester) {
@@ -50,7 +50,7 @@ async function execute(message, args) {
         for(let i = 0; i < args.length; i++) {
             const arg = args[i]
             if(isNaN(parseInt(arg))) {
-                if(arg == 'full') {
+                if(arg == 'all' || arg == 'full') {
                     amountFound = true
                     amount = remainingAmount
                     break
@@ -65,7 +65,7 @@ async function execute(message, args) {
         }
     
         if(!amountFound) {
-            return helper.replyCustomError(message, 'Invalid amount', `Please give the amount as a number or 'full', see usage: ${message.prefix}${options.name} ${options.usage}`)
+            return helper.replyCustomError(message, 'That doesn\'t seem like a right amount...', `Please give the amount as a number or 'all' or 'full', see usage: ${message.prefix}${options.name} ${options.usage}`)
         }
     
         console.log(`[ DEBUG ] Wants to donate amount of ${amount}`)

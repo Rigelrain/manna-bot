@@ -106,6 +106,10 @@ module.exports = {
 
         return progressStr
     },
+    getRandomColor() {
+        const index = Math.floor(Math.random() * config.colors.random.length)
+        return config.colors.random[index]
+    },
     replyGeneralError(message, err) {
         console.log(`[ ERROR ] ${JSON.stringify(err, null, 2)}`)
         const errEmbed = new Discord.MessageEmbed().setColor(config.colors.error)
@@ -115,7 +119,15 @@ module.exports = {
         message.delete({timeout: 1000})
         return
     },
-    async replyCustomError(message, title, description, err) {
+    /**
+     * 
+     * @param {*} message - Discord message object
+     * @param {string} title 
+     * @param {string} description 
+     * @param {*} err 
+     * @param {boolean} freeze - should the message stay in place?
+     */
+    async replyCustomError(message, title, description, err, freeze) {
         if(err) {
             console.log(`[ ERROR ] ${err}`)
         }
@@ -124,7 +136,7 @@ module.exports = {
             .setDescription(description? description : '')
         const reply = await message.channel.send(errEmbed)
         message.delete({timeout: 5000})
-        reply.delete({timeout: 5000})
+        if(!freeze) reply.delete({timeout: 5000})
         return
     },
     /**

@@ -29,7 +29,7 @@ module.exports = {
         return data
     },
     async newRequest(data) {
-        const newReq = await Request.create(data).exec()
+        const newReq = await Request.create(data)
 
         // console.log(`[ DB ] New request saved: ${JSON.stringify(newReq, null, 2)}`)
         return newReq

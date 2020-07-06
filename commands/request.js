@@ -1,5 +1,4 @@
 const info = require('../config/botinfo')
-const config = require('../config/config')
 const Discord = require('discord.js')
 const db = require('../js/db')
 const helper = require('../js/helpers')
@@ -29,13 +28,13 @@ const options = {
 async function execute(message, args) {
     // check that the user doesn't already have a pending request
     if(await db.getRequestData(message.author.id)) {
-        return helper.replyCustomError(message, 'You already have a request pending', 'Please cancel your previous request before starting a new one')
+        return helper.replyCustomError(message, 'You\'re asking for too much', 'Please cancel your previous request before starting a new one')
     }
 
     const reqtype = args.pop().toLowerCase()
 
     if(message.requesttypes.length > 0 && !message.requesttypes.includes(reqtype)) {
-        return helper.replyCustomError(message, 'Invalid request type', 'You can check the valid requests types with command `check`')
+        return helper.replyCustomError(message, 'Sorry but you can\'t ask for that!', `You can check the valid requests with command \`${message.prefix}check\``)
     }
 
     let amount, description
@@ -43,26 +42,21 @@ async function execute(message, args) {
     if(isNaN(parseInt(args[0]))) {
         // whole rest of args is description
         amount = 1
-        console.log(`[ DEBUG ] current args: ${args}`)
         description = args.join(' ')
     }
     else {
-        console.log(`[ DEBUG ] current args: ${args}, typeof args = array? ${Array.isArray(args)}, args length = ${args.length}`)
-
         amount = parseInt(args.shift())
 
         if(args.length == 1) {
-            console.log(`[ DEBUG ] only arg: ${args[0]}`)
             description = args[0]
         }
         else if(args.length > 1) {
-            console.log(`[ DEBUG ] current args: ${args}`)
             description = args.join(' ')
         }
     }
 
     const reqEmbed = new Discord.MessageEmbed()
-        .setColor(config.colors.success)
+        .setColor(helper.getRandomColor())
         .setTitle(`Request for ${amount? amount : ''} ${reqtype}`)
         .setDescription(`For who? --> ${message.author}${description? '\n**Details**:' + description : ''}`)
         .setFooter('')
@@ -92,8 +86,7 @@ async function execute(message, args) {
         Details: ${description}`)
     }
     catch(e) {
-        console.log(`[ ERROR ] Error in saving request to DB:
-        ${e}`)
+        helper.replyCustomError(message, 'Oopsie with the request!', `${message.author}, I encountered an issue saving your request to the database, sorry!`, `Error in saving request to DB: ${e}`, true)
     }
 }
 

@@ -49,7 +49,7 @@ async function execute(message, args) {
         await Server.findOneAndUpdate({serverID: message.guild.id}, { $pull: {requestTypes: args} }, { upsert: true} ).exec()
     }
 
-    return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} request types succeeded`, `${isAdd? 'Added' : 'Removed'} following types: ${args.join(' ')}`)
+    return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} request types succeeded!`, `${isAdd? 'Added' : 'Removed'} following types: ${args.join(' ')}`)
 }
 
 module.exports = options

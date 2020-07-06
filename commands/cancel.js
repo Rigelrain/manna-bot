@@ -11,7 +11,7 @@ const options = {
     name: 'cancel',
     aliases: ['cancelreq', 'cancelrequest', 'endrequest'],
 
-    description: 'Cancel te previous request.',
+    description: 'Cancel the previous request.',
     minArgs: 0,
 
     roleRestrict: 'requester',
@@ -23,7 +23,7 @@ async function execute(message) {
     // Get the request from DB
     const req = await db.getRequestData(message.author.id)
     if(!req) {
-        return helper.replyCustomError(message, 'No request found')
+        return helper.replyCustomError(message, 'Sorry! I can\'t find any old requests from you')
     }
 
     // fetch req msg and send it as DM

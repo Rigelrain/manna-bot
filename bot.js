@@ -141,6 +141,4 @@ process.on('unhandledRejection', error => console.error('Uncaught Promise Reject
 // TODO list:
 /**
  * - Add some welcoming message/info when bot joins the server (DM to inviter?)
- * - Add more info about types to serverinfo
- * - add color variation to requests
  */

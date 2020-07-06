@@ -41,7 +41,7 @@ async function execute(message, args) {
 
     const roletype = args.shift().toLowerCase()
     if(!['moderator', 'requester', 'pledger'].includes(roletype)) {
-        return helper.replyCustomError(message, 'Invalid role type', `You must specify which role you are adding. Available options:
+        return helper.replyCustomError(message, 'That\'s not a type of role I\'m looking for...', `You must specify which kinf of a role you are adding. Available options:
         moderator - who can edit bot settings
         requester - who can make requests
         pledger - who can offer to pledge`)
@@ -63,7 +63,7 @@ async function execute(message, args) {
             roleNames.push(role.name)
         }
         catch(e) {
-            return helper.replyCustomError(message, 'Invalid role', 'You must either give one role as text or mention one or more roles.')
+            return helper.replyCustomError(message, 'That\'s not a role I\'m looking for...', 'You should mention one or more roles.')
         }
     }
     else {
@@ -92,7 +92,7 @@ async function execute(message, args) {
         await Server.findOneAndUpdate({serverID: message.guild.id}, { $pull: {[query]: roles} }, { upsert: true} ).exec()
     }
 
-    return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} ${roletype} succeeded`, `${isAdd? 'Added' : 'Removed'} following roles: ${roleNames.join(', ')}`)
+    return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} ${roletype} is a success!`, `${isAdd? 'Added' : 'Removed'} following roles: ${roleNames.join(', ')}`)
 }
 
 module.exports = options
