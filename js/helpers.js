@@ -25,7 +25,7 @@ module.exports = {
             if(serverRoles 
                 && serverRoles.moderator
                 && serverRoles.moderator.length > 0
-                && member.roles.some(r => serverRoles.moderator.includes(r.id))) {
+                && member.roles.cache.some(r => serverRoles.moderator.includes(r.id))) {
                 // Check if they have one of many roles
                 // has one of the roles
                 //console.log('[ DEBUG ] User is a moderator.')
@@ -36,7 +36,7 @@ module.exports = {
             if(!serverRoles 
                 || !serverRoles.requester 
                 || serverRoles.requester.length == 0
-                || member.roles.some(r => serverRoles.requester.includes(r.id))) {
+                || member.roles.cache.some(r => serverRoles.requester.includes(r.id))) {
                 //console.log('[ DEBUG ] Allowing access for requester.')
                 roleMatch = true
             }
@@ -130,17 +130,18 @@ module.exports = {
     /**
      * Send a a success-color embed, which will be deleted after 5secs.  
      * The command will be deleted after 1 sec.
-     * @param {*} message 
-     * @param {*} title 
-     * @param {*} description 
+     * @param {*} message - Discord message object
+     * @param {string} title 
+     * @param {string} description 
+     * @param {boolean} freeze - should the message stay in place?
      */
-    async replySuccess(message, title, description) {
+    async replySuccess(message, title, description, freeze) {
         const replyEmbed = new Discord.MessageEmbed().setColor(config.colors.success)
             .setTitle(title? title : 'Success!')
             .setDescription(description? description : '')
         const reply = await message.channel.send(replyEmbed)
         message.delete({timeout: 1000})
-        reply.delete({timeout: 5000})
+        if(!freeze) reply.delete({timeout: 5000})
         return
     },
     replyToChannel(message, channelID, title, description) {

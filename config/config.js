@@ -2,7 +2,7 @@ module.exports = {
     name: 'Manna',
     prefix: '!manna ', // default prefix
     exampleRequests: {
-        'Animal Crossing': ['bells', 'NMT', 'flowers', 'stacks'],
+        'Animal Crossing': ['bells', 'NMT', 'flowers', 'stacks', 'star-frags'],
     },
     colors: {
         success: '#baf7bc',

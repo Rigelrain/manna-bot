@@ -13,7 +13,7 @@ const options = {
 
     description: 'Add or remove a role from server settings.',
     minArgs: 3,
-    usage: '<roletype> <add/remove> <role>',
+    usage: '<add/remove> <roletype> <role>',
 
     help: info.aboutRoles,
     
@@ -28,14 +28,6 @@ async function execute(message, args) {
 
     console.log('[ INFO ] Server setup - role')
 
-    const roletype = args.shift().toLowerCase()
-    if(!['moderator', 'requester', 'pledger'].includes(roletype)) {
-        return helper.replyCustomError(message, 'Invalid role type', `You must specify which role you are adding. Available options:
-        moderator - who can edit bot settings
-        requester - who can make requests
-        pledger - who can offer to pledge`)
-    } 
-
     // check whether should add or remove
     const rawAddRemove = args.shift().toLowerCase()
     let isAdd
@@ -46,6 +38,14 @@ async function execute(message, args) {
         return helper.replyCustomError(message, e, `Bot usage: ${message.prefix}${options.usage}`)
     }
     console.log(`[ DEBUG ] ${isAdd? 'Adding' : 'Removing'} roles...`)
+
+    const roletype = args.shift().toLowerCase()
+    if(!['moderator', 'requester', 'pledger'].includes(roletype)) {
+        return helper.replyCustomError(message, 'Invalid role type', `You must specify which role you are adding. Available options:
+        moderator - who can edit bot settings
+        requester - who can make requests
+        pledger - who can offer to pledge`)
+    } 
 
     // fetch the role
     let roles = []
