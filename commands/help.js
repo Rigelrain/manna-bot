@@ -6,7 +6,7 @@ const helper = require('../js/helpers')
 const options = {
 
     name: 'help',
-    aliases: ['info', '?', 'h', 'commands'],
+    aliases: ['h', 'commands'],
     minArgs: 0,
     usage: '[command]',
 
@@ -65,7 +65,7 @@ async function execute(message, args) {
                 }
     
                 if(cmd.help) {
-                    helpStr += `\nAdditional help available with 'help ${cmd.name}'`
+                    helpStr += `\nAdditional help available with \`help ${cmd.name}\``
                 }
     
                 if (cmd.roleRestrict) {
@@ -94,7 +94,7 @@ async function execute(message, args) {
     helpEmbed.setDescription('see [GitHub for more info](https://github.com/Rigelrain/PledgeBot)')
     helpEmbed.setFooter('from Rigelrain bot factory') // TODO add a PNG image link in here
 
-    message.channel.send(helpEmbed)
+    message.channel.send(helpEmbed, { split: true })
 }
 
 module.exports = options

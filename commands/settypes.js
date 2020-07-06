@@ -1,4 +1,4 @@
-//const info = require('../config/botinfo')
+const info = require('../config/botinfo')
 const helper = require('../js/helpers')
 const Server = require('../schemas/server')
 
@@ -15,7 +15,7 @@ const options = {
     minArgs: 2,
     usage: '<add/remove> <type>',
 
-    //help: info.aboutRoles, // TODO add types info
+    help: info.request_types,
     
     example: 'add type1 type2 type3',
 

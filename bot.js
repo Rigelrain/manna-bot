@@ -67,7 +67,7 @@ client.on('message', async message => {
     if(serverData) {
         serverPrefix = serverData.prefix
         serverRoles = serverData.roles
-        serverReqTypes = serverData.requesttypes
+        serverReqTypes = serverData.requestTypes
     }
     const prefix = serverPrefix? serverPrefix : config.prefix
 
@@ -140,6 +140,7 @@ process.on('unhandledRejection', error => console.error('Uncaught Promise Reject
 
 // TODO list:
 /**
- * - Add server-specific request types
  * - Add some welcoming message/info when bot joins the server (DM to inviter?)
+ * - Add more info about types to serverinfo
+ * - add color variation to requests
  */

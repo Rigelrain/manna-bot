@@ -52,7 +52,10 @@ async function execute(message) {
 
     // DM the requester
     message.author.send(`Your request was cancelled! Check ${message.channel}`)
-    message.author.send(reqEmbed)
+    message.author.send(reqEmbed).catch((e) => {
+        console.log(`[ ERROR ] Could not send cancel DM to ${message.author.tag} ${e.message}`)
+        message.reply('Your request was cancelled! But it seems like I can\'t DM you the details. Do you have DMs disabled?')
+    })
 
     return helper.replySuccess(message, 'Old request cancelled!')
 }

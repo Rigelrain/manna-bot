@@ -111,15 +111,18 @@ async function execute(message, args) {
 
         //// END request msg update
 
-        //// Handle request fullfilment
+        //// Handle request fulfilment
         if(update.remaining == 0) {
             console.log('[ DEBUG ] Request fulfilled!')
             await db.deleteRequest(req._id)
             
-            requester.send(`Your request was fulfilled! Check ${message.channel}`)
+            requester.send(`Your request was fulfilled! Check ${message.channel}`).catch((e) => {
+                console.log(`[ ERROR ] Could not send req fulfil DM to ${requester.tag}: ${e.message}`)
+                message.channel.send(`${requester} Your request was fulfilled! But it seems like I can't DM you the details. Do you have DMs disabled?`)
+            })
             requester.send(reqEmbed)
         }
-        //// END fullfil
+        //// END fulfil
     }
     catch(e) {
         console.log(`[ ERROR ] ${e}`)

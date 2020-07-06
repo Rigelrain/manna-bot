@@ -15,7 +15,7 @@ const options = {
     minArgs: 3,
     usage: '<add/remove> <roletype> <role>',
 
-    help: info.aboutRoles,
+    help: info.about_roles,
     
     example: 'moderator add @moderator',
 

@@ -16,7 +16,7 @@ const options = {
     minArgs: 2,
     usage: '<add/remove> <role>',
 
-    help: info.aboutRoles,
+    help: info.about_roles,
     
     example: 'add @requester',
 
