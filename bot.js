@@ -137,3 +137,9 @@ client.login(token)
 
 // catch and log promise rejections
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
+
+// TODO list:
+/**
+ * - Add server-specific request types
+ * - Add some welcoming message/info when bot joins the server (DM to inviter?)
+ */

@@ -64,7 +64,7 @@ async function execute(message, args) {
     const reqEmbed = new Discord.MessageEmbed()
         .setColor(config.colors.success)
         .setTitle(`Request for ${amount? amount : ''} ${reqtype}`)
-        .setDescription(`For who? --> ${message.author}${description? '\n**Details:' + description : ''}`)
+        .setDescription(`For who? --> ${message.author}${description? '\n**Details**:' + description : ''}`)
         .setFooter('')
     
     // NOTE! The fresh request should not have any fields, since

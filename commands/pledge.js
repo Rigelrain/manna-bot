@@ -115,7 +115,7 @@ async function execute(message, args) {
         if(update.remaining == 0) {
             console.log('[ DEBUG ] Request fulfilled!')
             await db.deleteRequest(req._id)
-            // TODO DM the requester that the request is filled, link to msg?
+            
             requester.send(`Your request was fulfilled! Check ${message.channel}`)
             requester.send(reqEmbed)
         }
