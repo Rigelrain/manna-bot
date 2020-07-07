@@ -4,6 +4,7 @@ const Schema = mongoose.Schema
 const schema = new Schema({
     serverID: {type: String, required: true},
     channelID: String,
+    messageID: String, // message where queue was created, in queue list channel
     name: String,
     host: String,
     capacity: Number, // total amount of people that the host allows in the queue

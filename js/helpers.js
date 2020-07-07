@@ -180,7 +180,8 @@ module.exports = {
      * @param {boolean} freeze - should the message stay in place?
      */
     async replySuccess(message, title, description, freeze) {
-        const replyEmbed = new Discord.MessageEmbed().setColor(config.colors.success)
+        const replyEmbed = new Discord.MessageEmbed()
+            .setColor(config.colors.success)
             .setTitle(title? title : 'Success!')
             .setDescription(description? description : '')
         const reply = await message.channel.send(replyEmbed)

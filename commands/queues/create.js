@@ -23,6 +23,7 @@ async function execute(message, args) {
         return helper.replyCustomError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
     }
 
+    // === Extract capacity
     const capacity = parseInt(args.pop())
     const name = args.join('-').toLowerCase()
 
@@ -35,6 +36,7 @@ async function execute(message, args) {
         return helper.replyCustomError(message, 'Oops! Name is too long. Max 20 chars.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, `> Cannot create queue because invalid name length: ${name.length}`)
     }
 
+    // === Check that it doesn't exist already
     const existingQueues = await Queue.find({serverID: message.guild.id, name: name})
     if(existingQueues.length > 0) {
         return helper.replyCustomError(message, 'Oops! A queue with that name already exists. Please choose a different name.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, '> Duplicate name. Aborting.')
@@ -42,6 +44,7 @@ async function execute(message, args) {
 
     console.log(`[ INFO ] Creating queue with name "${name}" and capacity ${capacity}`)
 
+    // === Creating the new queue channel
     // create channel w/ perms (only allow needed people access to channel)
     const permissions = [
         { id: message.client.user, allow: ['VIEW_CHANNEL', 'SEND_MESSAGES', 'MANAGE_CHANNELS', 'MANAGE_ROLES'] }, // the bot can send and manage the channel and permissions
@@ -59,7 +62,7 @@ async function execute(message, args) {
         })
     }
 
-    let queueChannel, queueDoc
+    let queueChannel
     try {
         queueChannel = await message.guild.channels.create(name, {
             type: 'text',
@@ -71,24 +74,7 @@ async function execute(message, args) {
         throw `> Error creating the channel, aborting... Details: ${e}`
     }
 
-    try {
-        // add new queue to db
-        queueDoc = await Queue.create({
-            serverID: message.guild.id,
-            channelID: queueChannel.id,
-            name: name,
-            host: message.author.id,
-            capacity: capacity,
-            taken: 0,
-            done: 0,
-            users: [],
-        })
-    }
-    catch(e) {
-        message.guild.channels.cache.get(queueChannel.id).delete()
-        throw `> Error saving to DB, aborting... Details: ${e}`
-    }
-
+    // === Sending the info message to the new channel
     try {
         const queueEmbed = new Discord.MessageEmbed()
             .setColor(config.colors.info)
@@ -101,12 +87,42 @@ async function execute(message, args) {
         queueChannel.send(queueEmbed)
     }
     catch(e) {
-        Queue.findByIdAndDelete(queueDoc._id).exec()
-        message.guild.channels.cache.get(queueChannel.id).delete()
         throw `> Error sending the starting message... Details: ${e}`
     }
 
-    return helper.replySuccess(message, `Queue \`${name}\` created.`, `Channel: ${queueChannel}`, true)
+    // === Reply success, needs to be first so we can save msg id to DB
+    const replyEmbed = new Discord.MessageEmbed()
+        .setColor(helper.getRandomColor())
+        .setTitle(`Queue \`${name}\` created.`)
+        .setDescription(`Channel: ${queueChannel}`)
+        .addField('Capacity', `0 / ${capacity}`)
+    const replymsg = await message.channel.send(replyEmbed)
+
+    // === Add Reaction watcher
+    // TODO implement for joining
+
+    // === Save to DB
+    try {
+        // add new queue to db
+        await Queue.create({
+            serverID: message.guild.id,
+            channelID: queueChannel.id,
+            messageID: replymsg.id,
+            name: name,
+            host: message.author.id,
+            capacity: capacity,
+            taken: 0,
+            done: 0,
+            users: [],
+        })
+    }
+    catch(e) {
+        message.guild.channels.cache.get(queueChannel.id).delete()
+        replymsg.delete()
+        throw `> Error saving to DB, aborting... Details: ${e}`
+    }
+
+    return
 }
 
 module.exports = options
