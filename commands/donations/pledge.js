@@ -1,7 +1,7 @@
 //const config = require('../config/config')
 // const Discord = require('discord.js')
-const helper = require('../js/helpers')
-const db = require('../js/db')
+const helper = require('../../js/helpers')
+const db = require('../../js/db')
 
 /**
  * Request for a donation

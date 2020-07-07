@@ -1,24 +1,24 @@
-const info = require('../config/botinfo')
+const info = require('../../config/botinfo')
 const base = require('./setrole').execute
-const helper = require('../js/helpers')
+const helper = require('../../js/helpers')
 
 /**
- * Set requester role    
+ * Set moderator role    
  * Calls the setrole internally
  */
 
 const options = {
 
-    name: 'setrequester',
-    aliases: ['setreq', 'req', 'requester', 'requesters'],
+    name: 'setmoderator',
+    aliases: ['setmod', 'mod', 'mods', 'moderator', 'moderators'],
 
-    description: 'Add or remove a requester role from server settings.',
+    description: 'Add or remove a moderator role from server settings.',
     minArgs: 2,
     usage: '<add/remove> <role>',
 
     help: info.about_roles,
     
-    example: 'add @requester',
+    example: 'add @moderator',
 
     roleRestrict: 'moderator',
 
@@ -26,7 +26,7 @@ const options = {
 }
 
 async function execute(message, args) { 
-    const baseArgs = ['requester', ...args]
+    const baseArgs = ['moderator', ...args]
     base(message, baseArgs)
         .catch(e => {
             helper.replyGeneralError(message, e)

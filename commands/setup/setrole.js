@@ -1,6 +1,6 @@
-const info = require('../config/botinfo')
-const Server = require('../schemas/server')
-const helper = require('../js/helpers')
+const info = require('../../config/botinfo')
+const Server = require('../../schemas/server')
+const helper = require('../../js/helpers')
 
 /**
  * Setup any role

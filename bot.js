@@ -3,9 +3,6 @@ console.log(`[ START ] ${config.name} - Starting up...`)
 const Discord = require('discord.js')
 const client = new Discord.Client()
 
-// file i/o
-const fs = require('fs')
-
 // get sensitive tokens from process.ENV (for production) or from config files (for local development)
 const token = process.env.TOKEN || require('./config/token').token
 const mongoURL = process.env.DBPATH || require('./config/mongodb_config').path
@@ -34,14 +31,15 @@ mongoose.connect(mongoURL, { // options below
 
 // == COMMANDS - import commands from dir
 client.commands = new Discord.Collection()
-const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'))
-
-for (const file of commandFiles) {
-    const command = require('./commands/' + file)
-    client.commands.set(command.name, command)
-
-    // console.log(`[ DEBUG ] Added command: ${command.name}`);
-}
+const glob = require('glob')
+glob(__dirname + '/commands/**/*.js', {}, (err, files)=>{
+    // console.log(files)
+    for (const file of files) {
+        const command = require(file)
+        client.commands.set(command.name, command)
+        // console.log(`[ DEBUG ] Added command: ${command.name}`);
+    }
+})
 
 const cooldowns = new Discord.Collection()
 

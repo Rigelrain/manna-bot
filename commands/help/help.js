@@ -1,7 +1,7 @@
-const config = require('../config/config')
+const config = require('../../config/config')
 const Discord = require('discord.js')
 
-const helper = require('../js/helpers')
+const helper = require('../../js/helpers')
 
 const options = {
 

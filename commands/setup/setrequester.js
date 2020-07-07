@@ -1,6 +1,6 @@
-const info = require('../config/botinfo')
+const info = require('../../config/botinfo')
 const base = require('./setrole').execute
-const helper = require('../js/helpers')
+const helper = require('../../js/helpers')
 
 /**
  * Set requester role    
@@ -9,16 +9,16 @@ const helper = require('../js/helpers')
 
 const options = {
 
-    name: 'setpledger',
-    aliases: ['setpledge', 'pledger', 'pledgers'],
+    name: 'setrequester',
+    aliases: ['setreq', 'req', 'requester', 'requesters'],
 
-    description: 'Add or remove a pledger role from server settings.',
+    description: 'Add or remove a requester role from server settings.',
     minArgs: 2,
     usage: '<add/remove> <role>',
 
     help: info.about_roles,
     
-    example: 'add @pledger',
+    example: 'add @requester',
 
     roleRestrict: 'moderator',
 
@@ -26,7 +26,7 @@ const options = {
 }
 
 async function execute(message, args) { 
-    const baseArgs = ['pledger', ...args]
+    const baseArgs = ['requester', ...args]
     base(message, baseArgs)
         .catch(e => {
             helper.replyGeneralError(message, e)

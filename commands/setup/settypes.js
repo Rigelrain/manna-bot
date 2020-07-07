@@ -1,6 +1,6 @@
-const info = require('../config/botinfo')
-const helper = require('../js/helpers')
-const Server = require('../schemas/server')
+const info = require('../../config/botinfo')
+const helper = require('../../js/helpers')
+const Server = require('../../schemas/server')
 
 /**
  * Set request types    

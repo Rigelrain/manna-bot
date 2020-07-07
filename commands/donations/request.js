@@ -1,7 +1,7 @@
-const info = require('../config/botinfo')
+const info = require('../../config/botinfo')
 const Discord = require('discord.js')
-const db = require('../js/db')
-const helper = require('../js/helpers')
+const db = require('../../js/db')
+const helper = require('../../js/helpers')
 
 /**
  * Request for a donation
@@ -58,7 +58,7 @@ async function execute(message, args) {
     const reqEmbed = new Discord.MessageEmbed()
         .setColor(helper.getRandomColor())
         .setTitle(`Request for ${amount? amount : ''} ${reqtype}`)
-        .setDescription(`For who? --> ${message.author}${description? '\n**Details**:' + description : ''}`)
+        .setDescription(`For who? --> ${message.author}${description? '\n**Details**: ' + description : ''}`)
         .setFooter('')
     
     // NOTE! The fresh request should not have any fields, since

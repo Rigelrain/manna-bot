@@ -1,5 +1,5 @@
-const helper = require('../js/helpers')
-const Server = require('../schemas/server')
+const helper = require('../../js/helpers')
+const Server = require('../../schemas/server')
 
 
 /**

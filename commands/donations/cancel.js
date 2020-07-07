@@ -1,5 +1,5 @@
-const helper = require('../js/helpers')
-const db = require('../js/db')
+const helper = require('../../js/helpers')
+const db = require('../../js/db')
 
 /**
  * Set requester role    

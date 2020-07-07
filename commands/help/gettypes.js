@@ -1,4 +1,4 @@
-const helper = require('../js/helpers')
+const helper = require('../../js/helpers')
 
 /**
  * Get request types    
