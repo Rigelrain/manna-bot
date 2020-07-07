@@ -33,7 +33,7 @@ async function execute(message, args) {
 
     const reqtype = args.pop().toLowerCase()
 
-    if(message.requesttypes.length > 0 && !message.requesttypes.includes(reqtype)) {
+    if(message.requestTypes.length > 0 && !message.requestTypes.includes(reqtype)) {
         return helper.replyCustomError(message, 'Sorry but you can\'t ask for that!', `You can check the valid requests with command \`${message.prefix}check\``)
     }
 

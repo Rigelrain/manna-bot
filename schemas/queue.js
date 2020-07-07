@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const schema = new Schema({
-    serverID: String,
+    serverID: {type: String, required: true},
     channelID: String,
     name: String,
     host: String,
@@ -11,5 +11,7 @@ const schema = new Schema({
     done: Number, // amount of people who are done, and are not waiting anymore
     users: [String],
 })
+
+schema.index({serverID: 1})
 
 module.exports = mongoose.model('Queue', schema)

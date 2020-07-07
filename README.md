@@ -1,4 +1,4 @@
-# PledgeBot
+# Manna
 Discord.js bot for asking for donations/crowdfunding and pledging for them.
 
 ## Setup
@@ -49,14 +49,17 @@ Sensitive tokens should be saved into Heroku Dashboard in Config Vars. In code t
         requester: String, // ID of role that can initiate requests
         pledger: String, // ID of role that can respond to requests
     },
-    requesttypes: [String], // an array of allowed requests
+    requestTypes: [String], // an array of allowed requests
+    queueCategory: String, // category to use for queues
+    queueChannel: String, // channel where queue messages should go
+    queueMsg: String, // message that is added in every queue channel
 }
 ```
 
 ### Request schema
 ```
 {
-    serverID: String, // ID of the server, cannot be set by commands
+    serverID: String, // ID of the server the request was made
     userID: String, // ID of the user who made the request
     messageID: String, // ID of the message of the request (bot-made)
     request: {
@@ -66,3 +69,29 @@ Sensitive tokens should be saved into Heroku Dashboard in Config Vars. In code t
     },
 }
 ```
+
+### User schema
+```
+{ 
+    userID: String, // ID of the Discord user
+    ign: String, // in-game-name
+    island: String, // name of their ACNH island
+}
+```
+
+### Queue schema
+```
+{
+    serverID: String, // ID of the server where the queue was created
+    channelID: String, // ID of the created queue channel
+    name: String,
+    host: String, // user id of the host
+    capacity: Number, // total amount of people that the host allows in the queue
+    taken: Number, // the amount of slots in queue that have been claimed
+    done: Number, // amount of people who are done, and are not waiting anymore
+    users: [String], // user IDs of the people who've joined
+}
+```
+
+## Queue system
+[TBA]

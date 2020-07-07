@@ -21,9 +21,8 @@ const options = {
 
 async function execute(message) { 
     console.log('[ INFO ] Server reset requested...')
-    const serverID = message.guild.id
 
-    await Server.findOneAndDelete({serverID: serverID}).exec()
+    await Server.findByIdAndDelete(message._id).exec()
     
     return helper.replySuccess(message, 'All back to normal!', 'Now to just determine what normal really is... Anyway, I\'ve gone back to using my default settings.', true)
 }

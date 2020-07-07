@@ -30,7 +30,7 @@ async function execute(message, args) {
 
     console.log(`[ DEBUG ] Setting new server prefix to: '${newprefix}'`)
 
-    await Server.findOneAndUpdate({serverID: message.guild.id}, {prefix: newprefix}, { upsert: true} ).exec()
+    await Server.findByIdAndUpdate(message._id, {prefix: newprefix}, { upsert: true} ).exec()
 
     return helper.replySuccess(message, 'Prefix changed!', `From now on, please use \`${newprefix}\` to call me`)
 }

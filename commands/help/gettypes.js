@@ -19,11 +19,11 @@ const options = {
 
 async function execute(message) { 
     console.log('[ INFO ] Fetching server request types...')
-    if(message.requesttypes.length == 0) {
+    if(message.requestTypes.length == 0) {
         return helper.replySuccess(message, 'All types approved!', 'You can request anything you wish, but keep it cool ;) Good luck!', true)
     }
 
-    return helper.replySuccess(message, 'You can request these:', message.requesttypes.join(', '), true)
+    return helper.replySuccess(message, 'You can request these:', message.requestTypes.join(', '), true)
 }
 
 module.exports = options

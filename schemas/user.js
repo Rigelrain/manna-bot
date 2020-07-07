@@ -7,4 +7,6 @@ const schema = new Schema({
     island: String,
 })
 
+schema.index({ userID: 1})
+
 module.exports = mongoose.model('Userdata', schema, 'userdata')

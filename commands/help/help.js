@@ -70,7 +70,7 @@ async function execute(message, args) {
                 }
     
                 if (cmd.roleRestrict) {
-                    if(!message.serverRoles || !message.serverRoles[cmd.roleRestrict]) {
+                    if(!message.roles || !message.roles[cmd.roleRestrict]) {
                         // if the role is not set up in server settings
                         if(cmd.roleRestrict == 'moderator') {
                             helpStr += '*(Restricted to server admin only)*'
@@ -78,7 +78,7 @@ async function execute(message, args) {
                         // else: do nothing, is allowed for @everyone
                     }
                     else {
-                        helpStr += `\n*(Restricted to ${ helper.returnRoleNames(message, cmd.roleRestrict, message.serverRoles) } only)*`
+                        helpStr += `\n*(Restricted to ${ helper.returnRoleNames(message, cmd.roleRestrict, message.roles) } only)*`
                     }
                 }
     

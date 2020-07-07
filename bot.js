@@ -45,24 +45,14 @@ const cooldowns = new Discord.Collection()
 
 // ======== End setup
 
-const helpEmbedTemplate = new Discord.MessageEmbed()
-    .setColor(config.colors.info)
-    .setAuthor('Manna', 'https://i.imgur.com/kv48dQf.png', 'https://github.com/Rigelrain/PledgeBot')
-    .setTitle('Oh wow, a new place!')
-    .setDescription('Hi, I\'m Manna! You can see all my commands by using `!manna help`')
-    .setFooter('from Rigelrain bot factory')
-
-
 client.once('ready', () => {
     console.log('[ START ] Ready.')
 })
 
 //   ===    Initial bot message when it joins new server   ===
 client.on('guildCreate', server => {
-    const firstMsgEmbed = new Discord.MessageEmbed(helpEmbedTemplate)
-
     try {
-        server.systemChannel.send(firstMsgEmbed)
+        helper.replyInfo(server.systemChannel, config.prefix)
         console.log(`[ INFO ] Joined server ${server.name}`)
     }
     catch(e) {
@@ -82,20 +72,12 @@ client.on('message', async message => {
 
     // TODO fetch server info from DB
     const serverData = await db.getServerData(message.guild.id)
-    let serverPrefix, serverRoles, serverReqTypes
-    if(serverData) {
-        serverPrefix = serverData.prefix
-        serverRoles = serverData.roles
-        serverReqTypes = serverData.requestTypes
-    }
-    const prefix = serverPrefix? serverPrefix : config.prefix
+    if(!serverData.prefix) serverData.prefix = config.prefix
+    const prefix = serverData.prefix
 
     // if bot is used by mentioning --> send general command help
     if (message.mentions.has(client.user)) {
-        const helpMsg = new Discord.MessageEmbed(helpEmbedTemplate)
-        helpMsg.setTitle('Hello there!')
-        helpMsg.setDescription(`Hi, I'm Manna! You can see all my commands by using \`${prefix}help\``)
-        return message.channel.send(helpMsg)
+        return helper.replyInfo(message.channel, prefix, 'Hello there!')
     }
 
     // ignore messages that dont start with a valid prefix
@@ -116,16 +98,13 @@ client.on('message', async message => {
     // == CHECK COMMAND OPTIONS ==
 
     // role restricted
-    if (command.roleRestrict && !helper.checkRole(message.member, command.roleRestrict, serverRoles) ) { 
+    if (command.roleRestrict && !helper.checkRole(message.member, command.roleRestrict, serverData.roles) ) { 
         return helper.replyCustomError(message, 'Can\'t allow that', 'You do not have permissions to give that command to me.')
     }
 
     // argument count
     if (command.minArgs && args.length < command.minArgs) {
-        const errEmbed = new Discord.MessageEmbed().setColor(config.colors.error)
-            .setTitle('Oops! Are you missing something?')
-            .addField('Usage:', `\`${config.prefix}${command.name} ${command.usage}\``)
-        return message.channel.send(errEmbed)
+        return helper.replyCustomError(message, 'Oops! Are you missing something?', `Usage: \`${prefix}${command.name} ${command.usage}\``)
     }
 
     // == COOLDOWN HANDLING ==
@@ -141,24 +120,26 @@ client.on('message', async message => {
 
             if (now < expirationTime) {
                 const timeLeft = (expirationTime - now) / 1000
-                const errEmbed = new Discord.MessageEmbed().setColor(config.colors.error)
-                    .setTitle(`Wait ${timeLeft.toFixed(1)} more second(s) to call this again.`)
-                return message.channel.send(errEmbed)
+                return helper.replyCustomError(message, 'Patience!', `Wait ${timeLeft.toFixed(1)} more second(s) to call this again.`)
             }
         }
         timestamps.set(message.author.id, now)
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount)
     }
 
+    // == ADDING ALL SERVER DATA TO MESSAGE ==
+    for(const setting in serverData) {
+        //console.log(`[ DEBUG ] adding server setting ${setting} to ${JSON.stringify(serverData[setting])}`)
+        message[setting] = serverData[setting]
+    }
+    if(!message.requestTypes) message.requestTypes = []
+
     // == ACTUAL COMMAND CALL ==
-    message.serverRoles = serverRoles // save the roles so that commands can use them too
-    message.prefix = serverPrefix? serverPrefix : config.prefix // save prefix so that commands can use them too
-    message.requesttypes = serverReqTypes? serverReqTypes : []
     command.execute(message, args)
         .catch(err => {
             helper.replyGeneralError(message, err)
         })
-})
+}) 
 
 // ======= Login to Discord
 console.log('[ START ] Logging in to Discord...')

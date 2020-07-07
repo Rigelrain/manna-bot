@@ -11,5 +11,6 @@ const requestSchema = new Schema({
 })
 
 requestSchema.index({serverID: 1})
+requestSchema.index({userID: 1})
 
 module.exports = mongoose.model('Request', requestSchema)

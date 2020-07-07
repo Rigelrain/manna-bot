@@ -85,11 +85,11 @@ async function execute(message, args) {
 
     if(isAdd) {
         // use addToSet to ensure no role is added twice
-        await Server.findOneAndUpdate({serverID: message.guild.id}, { $addToSet: {[query]: {$each: roles}} }, { upsert: true } ).exec()
+        await Server.findByIdAndUpdate(message._id, { $addToSet: {[query]: {$each: roles}} }, { upsert: true } ).exec()
     }
     else {
         // use pull to remove all mentioned roles
-        await Server.findOneAndUpdate({serverID: message.guild.id}, { $pullAll: {[query]: roles} }, { upsert: true} ).exec()
+        await Server.findByIdAndUpdate(message._id, { $pullAll: {[query]: roles} }, { upsert: true} ).exec()
     }
 
     return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} ${roletype} is a success!`, `${isAdd? 'Added' : 'Removed'} following roles: ${roleNames.join(', ')}`, true)

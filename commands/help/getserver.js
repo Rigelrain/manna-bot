@@ -22,35 +22,35 @@ async function execute(message) {
     let detailStr = `Prefix: ${message.prefix}`
 
     // add info about available request types
-    if(message.requesttypes.length == 0) {
+    if(message.requestTypes.length == 0) {
         detailStr += '\nAvailable request types: All types approved!'
     }
     else {
-        detailStr += `\nAvailable request types: ${message.requesttypes.join(', ')}`
+        detailStr += `\nAvailable request types: ${message.requestTypes.join(', ')}`
     }
 
     //// add info about roles
     detailStr += '\n*Who can use the bot services*'
     // mods
     detailStr += '\nCan moderate bot: '
-    if(message.serverRoles && message.serverRoles.moderator && message.serverRoles.moderator.length > 0) {
-        detailStr += helper.returnRoleNames(message, 'moderator', message.serverRoles)
+    if(message.roles && message.roles.moderator && message.roles.moderator.length > 0) {
+        detailStr += helper.returnRoleNames(message, 'moderator', message.roles)
     }
     else {
         detailStr += 'server administrator(s)'
     }
     // requesters
     detailStr += '\nCan request: '
-    if(message.serverRoles && message.serverRoles.requester && message.serverRoles.requester.length > 0) {
-        detailStr += helper.returnRoleNames(message, 'requester', message.serverRoles)
+    if(message.roles && message.roles.requester && message.roles.requester.length > 0) {
+        detailStr += helper.returnRoleNames(message, 'requester', message.roles)
     }
     else {
         detailStr += 'everyone'
     }
     // pledgers
     detailStr += '\nCan donate: '
-    if(message.serverRoles && message.serverRoles.pledger && message.serverRoles.pledger.length > 0) {
-        detailStr += helper.returnRoleNames(message, 'pledger', message.serverRoles)
+    if(message.roles && message.roles.pledger && message.roles.pledger.length > 0) {
+        detailStr += helper.returnRoleNames(message, 'pledger', message.roles)
     }
     else {
         detailStr += 'everyone'

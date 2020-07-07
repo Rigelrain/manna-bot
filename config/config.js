@@ -11,4 +11,8 @@ module.exports = {
         warn: '#f5d77f',
         random: ['#ffbbcc', '#ffdddd', '#ffccff', '#cceeff', '#ccccee', '#ccbbdd'],
     },
+
+    queueCreateMsg: 'This is the channel where participants can chat about the queue. Please mind not to clog the channel with offtopic chat.',
+
+    nextWaitTime: 300000, // how long a member is kept in queue channel before kick
 }
