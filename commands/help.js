@@ -61,7 +61,8 @@ async function execute(message, args) {
                 helpStr += `\n\`${prefix}${cmd.name} ${cmd.usage? ' ' + cmd.usage : ''}\``
     
                 if (cmd.example) {
-                    helpStr += `\nExample:\n- \`${prefix}${cmd.name} ${cmd.example}\``
+                    helpStr += `\nExample:
+                    \`${prefix}${cmd.name} ${cmd.example}\``
                 }
     
                 if(cmd.help) {
@@ -91,10 +92,11 @@ async function execute(message, args) {
 
     helpEmbed.setAuthor(title? title : 'Bot Help', message.client.user.displayAvatarURL)
     helpEmbed.setThumbnail('https://i.imgur.com/kv48dQf.png')
-    helpEmbed.setDescription('see [GitHub for more info](https://github.com/Rigelrain/PledgeBot)')
+    helpEmbed.setDescription(`All commands should start with the bot prefix \`${prefix}\`
+    See [GitHub for more info](https://github.com/Rigelrain/PledgeBot)`)
     helpEmbed.setFooter('from Rigelrain bot factory') // TODO add a PNG image link in here
 
-    message.channel.send(helpEmbed, { split: true })
+    message.channel.send(helpEmbed)
 }
 
 module.exports = options

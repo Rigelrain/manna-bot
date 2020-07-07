@@ -30,7 +30,7 @@ async function execute(message) {
         helpEmbed.addField(nameStr, info[part])
     }
 
-    message.channel.send(helpEmbed, { split: true })
+    message.channel.send(helpEmbed)
 }
 
 module.exports = options

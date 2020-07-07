@@ -21,6 +21,9 @@ module.exports = {
         let roleMatch = false
 
         switch(role) {
+        case 'admin':
+            // will check below if the user is admin
+            break
         case 'moderator':
             if(serverRoles 
                 && serverRoles.moderator
@@ -77,7 +80,7 @@ module.exports = {
 
         try {
             serverRoles[role].forEach(roleID => {
-                roleArr.push(message.guild.roles.get(roleID).name)
+                roleArr.push(message.guild.roles.cache.get(roleID).name)
             })
             return roleArr.join(', ')
         }

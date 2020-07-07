@@ -47,9 +47,30 @@ const cooldowns = new Discord.Collection()
 
 // ======== End setup
 
+const helpEmbedTemplate = new Discord.MessageEmbed()
+    .setColor(config.colors.info)
+    .setAuthor('Manna', 'https://i.imgur.com/kv48dQf.png', 'https://github.com/Rigelrain/PledgeBot')
+    .setTitle('Oh wow, a new place!')
+    .setDescription('Hi, I\'m Manna! You can see all my commands by using `!manna help`')
+    .setFooter('from Rigelrain bot factory')
+
 
 client.once('ready', () => {
     console.log('[ START ] Ready.')
+})
+
+//   ===    Initial bot message when it joins new server   ===
+client.on('guildCreate', server => {
+    const firstMsgEmbed = new Discord.MessageEmbed(helpEmbedTemplate)
+
+    try {
+        server.systemChannel.send(firstMsgEmbed)
+        console.log(`[ INFO ] Joined server ${server.name}`)
+    }
+    catch(e) {
+        // most likely missing send permissions
+        console.log(`[ ERROR ] Joined server ${server.name}, but cannot send welcome msg due to: ${e.message}`)
+    }
 })
 
 client.on('message', async message => {
@@ -71,6 +92,14 @@ client.on('message', async message => {
     }
     const prefix = serverPrefix? serverPrefix : config.prefix
 
+    // if bot is used by mentioning --> send general command help
+    if (message.mentions.has(client.user)) {
+        const helpMsg = new Discord.MessageEmbed(helpEmbedTemplate)
+        helpMsg.setTitle('Hello there!')
+        helpMsg.setDescription(`Hi, I'm Manna! You can see all my commands by using \`${prefix}help\``)
+        return message.channel.send(helpMsg)
+    }
+
     // ignore messages that dont start with a valid prefix
     if(!message.content.startsWith(prefix)) { return }
 
@@ -89,7 +118,9 @@ client.on('message', async message => {
     // == CHECK COMMAND OPTIONS ==
 
     // role restricted
-    if (command.roleRestrict && !helper.checkRole(message.member, command.roleRestrict, serverRoles) ) { return }
+    if (command.roleRestrict && !helper.checkRole(message.member, command.roleRestrict, serverRoles) ) { 
+        return helper.replyCustomError(message, 'Can\'t allow that', 'You do not have permissions to give that command to me.')
+    }
 
     // argument count
     if (command.minArgs && args.length < command.minArgs) {
@@ -140,5 +171,7 @@ process.on('unhandledRejection', error => console.error('Uncaught Promise Reject
 
 // TODO list:
 /**
- * - Add some welcoming message/info when bot joins the server (DM to inviter?)
+ * - Add default types
+ * - add possibility to limit the amount of requests per day per user
+ * - Add queues
  */

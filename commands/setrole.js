@@ -56,7 +56,7 @@ async function execute(message, args) {
         const textRole = args.shift()
         console.log(`[ DEBUG ] Trying to find role ${textRole}`)
         try {
-            const role = message.guild.roles.find(r => r.name.toLowerCase() == textRole.toLowerCase())
+            const role = message.guild.roles.cache.find(r => r.name.toLowerCase() == textRole.toLowerCase())
             console.log(role)
             if(!role) { throw 'No role' }
             roles.push(role.id)
@@ -85,14 +85,14 @@ async function execute(message, args) {
 
     if(isAdd) {
         // use addToSet to ensure no role is added twice
-        await Server.findOneAndUpdate({serverID: message.guild.id}, {$addToSet: {[query]: {$each: roles}}}, { upsert: true} ).exec()
+        await Server.findOneAndUpdate({serverID: message.guild.id}, { $addToSet: {[query]: {$each: roles}} }, { upsert: true } ).exec()
     }
     else {
         // use pull to remove all mentioned roles
-        await Server.findOneAndUpdate({serverID: message.guild.id}, { $pull: {[query]: roles} }, { upsert: true} ).exec()
+        await Server.findOneAndUpdate({serverID: message.guild.id}, { $pullAll: {[query]: roles} }, { upsert: true} ).exec()
     }
 
-    return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} ${roletype} is a success!`, `${isAdd? 'Added' : 'Removed'} following roles: ${roleNames.join(', ')}`)
+    return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} ${roletype} is a success!`, `${isAdd? 'Added' : 'Removed'} following roles: ${roleNames.join(', ')}`, true)
 }
 
 module.exports = options
