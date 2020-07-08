@@ -9,7 +9,7 @@ const options = {
     name: 'checkserver',
     aliases: ['getserver', 'serverinfo', 'serverhelp', 'server'],
 
-    description: 'Show available request types for this server.',
+    description: 'Show all server settings made for this server.',
     minArgs: 0,
 
     roleRestrict: 'moderator',
@@ -21,12 +21,27 @@ async function execute(message) {
     console.log('[ INFO ] Fetching server info...')
     let detailStr = `Prefix: ${message.prefix}`
 
+    //// info about disabled features
+    // TODO add these to server info
+
     // add info about available request types
     if(message.requestTypes.length == 0) {
         detailStr += '\nAvailable request types: All types approved!'
     }
     else {
         detailStr += `\nAvailable request types: ${message.requestTypes.join(', ')}`
+    }
+
+    // add info about queue settings
+    if(message.queueCategory) {
+        detailStr += '\nQueue channels will be added under: ' + message.guild.channels.cache.get(message.queueCategory).name
+    }
+    if(message.queueChannel) {
+        detailStr += `\nQueues are listed in channel ${message.guild.channels.cache.get(message.queueChannel)}`
+    }
+    if(message.queueMsg) {
+        detailStr += `\nQueue's will have an info message:
+        ${message.queueMsg}`
     }
 
     //// add info about roles
@@ -51,6 +66,21 @@ async function execute(message) {
     detailStr += '\nCan donate: '
     if(message.roles && message.roles.pledger && message.roles.pledger.length > 0) {
         detailStr += helper.returnRoleNames(message, 'pledger', message.roles)
+    }
+    else {
+        detailStr += 'everyone'
+    }
+    // queues
+    detailStr += '\nCan start a queue: '
+    if(message.roles && message.roles.queuemod && message.roles.queuemod.length > 0) {
+        detailStr += helper.returnRoleNames(message, 'queuemod', message.roles)
+    }
+    else {
+        detailStr += 'everyone'
+    }
+    detailStr += '\nCan join a queue: '
+    if(message.roles && message.roles.queue && message.roles.queue.length > 0) {
+        detailStr += helper.returnRoleNames(message, 'queue', message.roles)
     }
     else {
         detailStr += 'everyone'

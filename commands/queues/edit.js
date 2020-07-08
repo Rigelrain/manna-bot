@@ -2,6 +2,7 @@ const Queue = require('../../schemas/queue')
 const helper = require('../../js/helpers')
 
 const options = {
+    type: 'queues',
 
     name: 'edit',
     aliases: ['qadd', 'qedit', 'expand'],
@@ -16,13 +17,17 @@ const options = {
 }
 
 async function execute(message, args) {
+    if(!(message.queueCategory && message.queueChannel)) {
+        return helper.replyCustomError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
+    }
+
     const expandBy = parseInt(args.shift())
 
     console.log(`[ INFO ] Editing queue ${message.channel} capacity by ${expandBy}`)
 
     let queue
     try {
-        queue = await Queue.findOneAndUpdate({channelID: message.channel.id}, {$inc: { capacity: expandBy }}, {lean:true, new: true}).exec()
+        queue = await Queue.findOneAndUpdate({serverID: message.guild.id, channelID: message.channel.id}, {$inc: { capacity: expandBy }}, {lean:true, new: true}).exec()
     }
     catch(e) {
         return helper.replyCustomError(message, 'Oops! Something went wrong...', null, `> Error from updating DB: ${e}`)

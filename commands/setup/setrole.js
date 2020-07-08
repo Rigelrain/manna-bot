@@ -44,7 +44,9 @@ async function execute(message, args) {
         return helper.replyCustomError(message, 'That\'s not a type of role I\'m looking for...', `You must specify which kinf of a role you are adding. Available options:
         moderator - who can edit bot settings
         requester - who can make requests
-        pledger - who can offer to pledge`)
+        pledger - who can offer to pledge
+        queuemod - who can make queues
+        queue - who can join queues`)
     } 
 
     // fetch the role
