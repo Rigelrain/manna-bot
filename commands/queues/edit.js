@@ -1,0 +1,50 @@
+const Queue = require('../../schemas/queue')
+const helper = require('../../js/helpers')
+
+const options = {
+
+    name: 'edit',
+    aliases: ['qadd', 'qedit', 'expand'],
+
+    minArgs: 1,
+    usage: '<amount>',
+    description: 'Adds or substracts capacity of an existing queue. Use only in an existing queue.',
+
+    cooldown: 5,
+
+    roleRestrict: 'queuemod',
+}
+
+async function execute(message, args) {
+    const expandBy = parseInt(args.shift())
+
+    console.log(`[ INFO ] Editing queue ${message.channel} capacity by ${expandBy}`)
+
+    let queue
+    try {
+        queue = await Queue.findOneAndUpdate({channelID: message.channel.id}, {$inc: { capacity: expandBy }}, {lean:true, new: true}).exec()
+    }
+    catch(e) {
+        return helper.replyCustomError(message, 'Oops! Something went wrong...', null, `> Error from updating DB: ${e}`)
+    }
+
+    // if not in queue channel
+    if (!queue) {
+        return helper.replyCustomError(message, 'Oops! You need to be in a queue channel to add capacity.', null, '> Not in correct channel. Aborting.')
+    }
+
+    // edit the queue created msg
+    const queueListChannel = message.guild.channels.cache.get(message.queueChannel)
+    const queueMsg = await queueListChannel.messages.fetch(queue.messageID)
+    const queueMsgEmbed = queueMsg.embeds[0]
+
+    queueMsgEmbed.fields[0].value = `${queue.taken} / ${queue.capacity}` 
+
+    await queueMsg.edit(queueMsgEmbed)
+
+    // confirmation message
+    return helper.replySuccess(message, `Available spots ${expandBy < 0? 'decreased': 'increased'} by ${expandBy}.`, `${queue.capacity - queue.taken} of ${queue.capacity} spots left.`, true)
+}
+
+module.exports = options
+module.exports.execute = execute

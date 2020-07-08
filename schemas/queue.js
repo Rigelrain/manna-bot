@@ -7,9 +7,9 @@ const schema = new Schema({
     messageID: String, // message where queue was created, in queue list channel
     name: String,
     host: String,
-    capacity: Number, // total amount of people that the host allows in the queue
-    taken: {type: Number, default: 0}, // the amount of slots in queue that have been claimed
-    done: {type: Number, default: 0}, // amount of people who are done, and are not waiting anymore
+    capacity: {type: Number, min: 1}, // total amount of people that the host allows in the queue
+    taken: {type: Number, default: 0, min: 0}, // the amount of slots in queue that have been claimed
+    done: {type: Number, default: 0, min: 0}, // amount of people who are done, and are not waiting anymore
     users: {type: [String], default: []},
 })
 
