@@ -37,20 +37,25 @@ async function execute(message, args) {
     catch(e) {
         return helper.replyCustomError(message, e, `Bot usage: ${message.prefix}${options.usage}`)
     }
-    console.log(`[ DEBUG ] ${isAdd? 'Adding' : 'Removing'} types...`)
+
+    // safeguard against using commas
+    // join into one string, replace all commas with space, split again
+    let types = args.join(' ').replace(/,/g, ' ').split(/ +/)
+
+    console.log(`[ DEBUG ] ${isAdd? 'Adding' : 'Removing'} types ${types.join(', ')}...`)
 
     // TODO go through rest of args to see if they're valid? Some kind of regex
 
     if(isAdd) {
         // use addToSet to ensure no type is added twice
-        await Server.findOneAndUpdate({serverID: message.guild.id}, {$addToSet: {requestTypes: {$each: args}}}, { upsert: true} ).exec()
+        await Server.findOneAndUpdate({serverID: message.guild.id}, {$addToSet: {requestTypes: {$each: types}}}, { upsert: true} ).exec()
     }
     else {
         // use pull to remove all mentioned types
-        await Server.findOneAndUpdate({serverID: message.guild.id}, { $pullAll: {requestTypes: args} }, { upsert: true} ).exec()
+        await Server.findOneAndUpdate({serverID: message.guild.id}, { $pullAll: {requestTypes: types} }, { upsert: true} ).exec()
     }
 
-    return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} request types succeeded!`, `${isAdd? 'Added' : 'Removed'} following types: ${args.join(' ')}`)
+    return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} request types succeeded!`, `${isAdd? 'Added' : 'Removed'} following types: ${types.join(' ')}`)
 }
 
 module.exports = options

@@ -14,7 +14,7 @@ const options = {
 
     description: 'Disable feature group(s) from the server.',
     minArgs: 1,
-    usage: '<feature1> [feature2] [feature3]',
+    usage: '<feature1 OR all> [feature2] [feature3]',
 
     help: info.features,
 
@@ -24,10 +24,21 @@ const options = {
 }
 
 async function execute(message, args) { 
+    // safeguard against using commas
+    // join into one string, replace all commas with space, split again
+    args = args.join(' ').replace(/,/g, ' ').split(/ +/)
+
     console.log(`[ INFO ] Feature disabling requested with args ${args.join(', ')} ...`)
 
-    // filter out all args that are not features (see config!)
-    const features = args.filter(feat => config.features.includes(feat))
+    let features
+
+    if(args[0].toLowerCase() == 'all') {
+        features = config.features
+    }
+    else {
+        // filter out all args that are not features (see config!)
+        features = args.filter(feat => config.features.includes(feat))
+    }
 
     if(!features || features.length == 0) {
         return helper.replyCustomError(message, 'I couldn\'t see any valid features in that...', `Use \`${message.prefix}help ${options.name}\` for more info about features.`)
