@@ -87,9 +87,9 @@ Sensitive tokens should be saved into Heroku Dashboard in Config Vars. In code t
     name: String,
     host: String, // user id of the host
     capacity: Number, // total amount of people that the host allows in the queue
-    taken: Number, // the amount of slots in queue that have been claimed
-    done: Number, // amount of people who are done, and are not waiting anymore
-    users: [String], // user IDs of the people who've joined
+    taken: {type: Number, default: 0}, // the amount of slots in queue that have been claimed
+    done: {type: Number, default: 0}, // amount of people who are done, and are not waiting anymore
+    users: {type: [String], default: []},
 }
 ```
 

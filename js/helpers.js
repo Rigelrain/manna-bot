@@ -193,6 +193,6 @@ module.exports = {
         const queueEmbed = new Discord.MessageEmbed().setColor(config.colors.success)
             .setTitle(title? title : 'Hello!')
             .setDescription(description? description : '')
-        message.guild.channels.get(channelID).send(queueEmbed)
+        message.guild.channels.cache.get(channelID).send(queueEmbed)
     },
 }

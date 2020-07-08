@@ -19,7 +19,7 @@ const options = {
 async function execute(message, args) {
     // console.log(`[ DEBUG ] Creating queue started with args: ${JSON.stringify(args, null, 2)}`);
 
-    if(!message.queueCategory) {
+    if(!(message.queueCategory && message.queueChannel)) {
         return helper.replyCustomError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
     }
 
@@ -81,9 +81,9 @@ async function execute(message, args) {
             .setTitle(`**Queue ${name}**`)
             .setDescription(message.queueMsg ? message.queueMsg : config.queueCreateMsg)
             .addField(`Capacity:  \` ${capacity} \``, `Host: ${message.author}`)
-            .addField('Relevant commands:', `Leave queue: \`${message.prefix} leave\` (you will lose this channel and your spot in this queue)
-    Get next in line (host only): \`${message.prefix} next\`
-    End queue (host only): \`${message.prefix} end\``)
+            .addField('Relevant commands:', `Leave queue: \`${message.prefix}leave\` (you will lose this channel and your spot in this queue)
+    Get next in line (host only): \`${message.prefix}next\`
+    Close queue (host only): \`${message.prefix}close\``)
         queueChannel.send(queueEmbed)
     }
     catch(e) {
@@ -111,9 +111,6 @@ async function execute(message, args) {
             name: name,
             host: message.author.id,
             capacity: capacity,
-            taken: 0,
-            done: 0,
-            users: [],
         })
     }
     catch(e) {
@@ -122,6 +119,8 @@ async function execute(message, args) {
         throw `> Error saving to DB, aborting... Details: ${e}`
     }
 
+    // remove the command message
+    message.delete()
     return
 }
 
