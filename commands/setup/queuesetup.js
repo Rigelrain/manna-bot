@@ -48,7 +48,8 @@ async function execute(message, args) {
 
     console.log(`[ DEBUG ] Trying to update server with info: ${JSON.stringify(update, null, 2)}`)
 
-    const updated = await Server.findByIdAndUpdate(message._id, update, {upsert: true, new: true}).lean().exec()
+    // cannot use findById here, since server info might not exist yet
+    const updated = await Server.findOneAndUpdate({serverID: message.guild.id}, update, {upsert: true, new: true}).lean().exec()
 
     console.log(`[ DEBUG ] Updated server info to ${JSON.stringify(updated, null, 2)}`)
 
