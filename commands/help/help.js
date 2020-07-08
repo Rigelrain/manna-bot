@@ -26,8 +26,6 @@ const options = {
 async function execute(message, args) {
 
     console.log(`[ INFO ] Showing help with args : ${JSON.stringify(args)}`)
-    const helpEmbed = new Discord.MessageEmbed().setColor(config.colors.info)
-    let title
     const prefix = message.prefix
 
     const commands = message.client.commands
@@ -39,34 +37,57 @@ async function execute(message, args) {
             return helper.replyCustomError(message, 'Invalid command parameter', `That's not a valid command, sorry. I can't find any data of ${args[0]}`)
         }
 
-        title = `Help with *${cmd.name}*`
+        const helpEmbed = new Discord.MessageEmbed()
+            .setColor(config.colors.info)
+            .setAuthor(`Help with *${cmd.name}*`, message.client.user.displayAvatarURL)
+            .setThumbnail('https://i.imgur.com/kv48dQf.png')
+            .setDescription(`All commands should start with the bot prefix \`${prefix}\`\nSee [GitHub for more info](https://github.com/Rigelrain/PledgeBot)`)
+            .setFooter('from Rigelrain bot factory') // TODO add a PNG image link in here
+        
+        if(cmd.type) {
+            helpEmbed.addField('Included in feature', `${cmd.type}`)
+            helpEmbed
+        }
 
         helpEmbed.addField('Commands',  `**${cmd.name}**` + (cmd.aliases ? ', ' + cmd.aliases.join(', ') : ''), true)
         helpEmbed.addField('Usage', `\`${prefix}${cmd.name} ${cmd.usage? ' ' + cmd.usage : ''}\``, true)
+
         if (cmd.example) {
             helpEmbed.addField('Example', `\`${prefix}${cmd.name} ${cmd.example}\``, true)
         }
         if(cmd.cooldown) {
             helpEmbed.addField('Cooldown', `${cmd.cooldown}s`)
         }
+
         helpEmbed.addField('Info', `${cmd.description}${cmd.help? '\n' + cmd.help : '' }`)
+
+        helpEmbed.addField('Notes:', `Do not include <> nor [] - <> means required and [] means optional.\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`)
+
+        return message.channel.send(helpEmbed)
     }
-    else { // show synopsis of all commands
+    else { // show synopsis of all commands, plain text (exceeds char limits)
+        let helpStr = 'Here are all of my commands!'
+
         commands.forEach((cmd) => {
             // only show role-restricted commands if member is in a server and they have that role
             if (!cmd.roleRestrict || ( cmd.roleRestrict && message.guild && helper.checkRole(message.member, cmd.roleRestrict) ) ) {
+
+                helpStr += `\n\n**${cmd.name}**` 
+                helpStr += cmd.aliases ? ', ' + cmd.aliases.join(', ') + '\n' : '\n'
     
-                let helpStr = cmd.description
+                if(cmd.type) {
+                    helpStr += `*Feature*: ${cmd.type}. `
+                }
+                helpStr += cmd.description
     
                 helpStr += `\n\`${prefix}${cmd.name} ${cmd.usage? ' ' + cmd.usage : ''}\``
     
                 if (cmd.example) {
-                    helpStr += `\nExample:
-                    \`${prefix}${cmd.name} ${cmd.example}\``
+                    helpStr += `\nExample: \`${prefix}${cmd.name} ${cmd.example}\``
                 }
     
                 if(cmd.help) {
-                    helpStr += `\nAdditional help available with \`help ${cmd.name}\``
+                    helpStr += `\nAdditional help available with \`${prefix}help ${cmd.name}\``
                 }
     
                 if (cmd.roleRestrict) {
@@ -82,21 +103,14 @@ async function execute(message, args) {
                     }
                 }
     
-                helpEmbed.addField(`**${cmd.name}**` + (cmd.aliases ? ', ' + cmd.aliases.join(', ') : ''), helpStr)
+                
             }
         })
 
-        helpEmbed.addField('Notes:', `\nDo not include <> nor [] - <> means required and [] means optional.
-        You can send ${prefix} help [command name] to get info on a specific command!`)
+        helpStr += `\n\n**Notes**:\nDo not include <> nor [] - <> means required and [] means optional.\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`
+
+        return message.channel.send(helpStr, {split: true})
     }
-
-    helpEmbed.setAuthor(title? title : 'Bot Help', message.client.user.displayAvatarURL)
-    helpEmbed.setThumbnail('https://i.imgur.com/kv48dQf.png')
-    helpEmbed.setDescription(`All commands should start with the bot prefix \`${prefix}\`
-    See [GitHub for more info](https://github.com/Rigelrain/PledgeBot)`)
-    helpEmbed.setFooter('from Rigelrain bot factory') // TODO add a PNG image link in here
-
-    message.channel.send(helpEmbed)
 }
 
 module.exports = options

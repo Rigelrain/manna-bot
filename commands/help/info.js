@@ -20,7 +20,7 @@ async function execute(message) {
 
     helpEmbed.setAuthor('What is this bot?', message.client.user.displayAvatarURL)
     helpEmbed.setThumbnail('https://i.imgur.com/kv48dQf.png')
-    helpEmbed.setDescription('see [GitHub for more info](https://github.com/Rigelrain/PledgeBot)')
+    helpEmbed.setDescription('see [GitHub](https://github.com/Rigelrain/PledgeBot) for more detailed info with examples.')
     helpEmbed.setFooter('from Rigelrain bot factory') // TODO add a PNG image link in here
 
     for(const part in info) {

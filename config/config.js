@@ -5,8 +5,9 @@ module.exports = {
     features: ['donations', 'queues'], 
     // add all new role types here
     roletypes: ['moderator', 'requester', 'pledger', 'queuemod', 'queue'],
-    exampleRequests: {
-        'Animal Crossing': ['bells', 'NMT', 'flowers', 'stacks', 'star-frags'],
+    // presets for different games
+    reqtypePresets: {
+        'Animal Crossing': ['bells', 'nmt', 'nmts', 'flowers', 'stacks', 'star-frags', 'item'],
     },
     colors: {
         success: '#baf7bc',
