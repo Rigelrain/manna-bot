@@ -8,6 +8,7 @@ const helper = require('../../js/helpers')
  */
 
 const options = {
+    type: 'donations',
 
     name: 'setrequester',
     aliases: ['setreq', 'req', 'requester', 'requesters'],

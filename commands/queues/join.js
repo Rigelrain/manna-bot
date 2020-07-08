@@ -3,6 +3,7 @@ const Queue = require('../../schemas/queue')
 const User = require('../../schemas/user')
 
 const options = {
+    type: 'queues',
 
     name: 'join',
     aliases: ['qjoin', 'qenter', 'enter'],

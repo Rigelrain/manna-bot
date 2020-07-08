@@ -7,6 +7,7 @@ const Server = require('../../schemas/server')
  */
 
 const options = {
+    type: 'queues',
 
     name: 'queuesetup',
     aliases: ['queueset', 'qset'],

@@ -2,6 +2,7 @@ const helper = require('../../js/helpers')
 const User = require('../../schemas/user')
 
 const options = {
+    type: 'queues',
 
     name: 'set',
     aliases: ['setall', 'setuser', 'setinfo'],

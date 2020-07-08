@@ -7,6 +7,7 @@ const Queue = require('../../schemas/queue')
  */
 
 const options = {
+    type: 'queues',
 
     name: 'clean',
 
@@ -19,7 +20,6 @@ const options = {
     minArgs: 0,
 }
 
-// eslint-disable-next-line no-unused-vars
 async function execute(message) {
 
     const authorID = message.author.id

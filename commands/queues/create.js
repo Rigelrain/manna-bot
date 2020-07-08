@@ -4,8 +4,10 @@ const helper = require('../../js/helpers')
 const Queue = require('../../schemas/queue')
 
 const options = {
+    type: 'queues',
+    
     name: 'create',
-    aliases: ['start', 'open', 'createqueue'],
+    aliases: ['start', 'open', 'qcreate', 'queuecreate'],
 
     usage: '<queue name> <capacity>',
     description: 'Creates a new queue with the given <queue name> and <capacity>.',
@@ -95,7 +97,7 @@ async function execute(message, args) {
         .setColor(helper.getRandomColor())
         .setTitle(`Queue \`${name}\` created.`)
         .setDescription(`Channel: ${queueChannel}`)
-        .addField('Capacity', `0 / ${capacity}`)
+        .addField('Slots taken', `0 / ${capacity}`)
     const replymsg = await message.channel.send(replyEmbed)
 
     // === Add Reaction watcher

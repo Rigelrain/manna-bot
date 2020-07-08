@@ -1,6 +1,7 @@
 const info = require('../../config/botinfo')
 const Server = require('../../schemas/server')
 const helper = require('../../js/helpers')
+const config = require('../../config/config')
 
 /**
  * Setup any role
@@ -40,8 +41,8 @@ async function execute(message, args) {
     console.log(`[ DEBUG ] ${isAdd? 'Adding' : 'Removing'} roles...`)
 
     const roletype = args.shift().toLowerCase()
-    if(!['moderator', 'requester', 'pledger'].includes(roletype)) {
-        return helper.replyCustomError(message, 'That\'s not a type of role I\'m looking for...', `You must specify which kinf of a role you are adding. Available options:
+    if(!config.roletypes.includes(roletype)) {
+        return helper.replyCustomError(message, 'That\'s not a type of role I\'m looking for...', `You must specify which kind of a role you are adding. Available options:
         moderator - who can edit bot settings
         requester - who can make requests
         pledger - who can offer to pledge

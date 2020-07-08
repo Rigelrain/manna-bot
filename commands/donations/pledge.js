@@ -8,9 +8,10 @@ const db = require('../../js/db')
  */
 
 const options = {
-
-    name: 'pledge',
-    aliases: ['donate', 'giveto'],
+    type: 'donations',
+    
+    name: 'donate',
+    aliases: ['pledge', 'giveto'],
 
     description: 'Offer to donate. Give amount as a number or `all` if you will donate the max remaining amount',
     minArgs: 1,

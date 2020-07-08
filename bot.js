@@ -70,7 +70,7 @@ client.on('message', async message => {
     // ignore DMs
     if(message.channel.type !== 'text') { return }
 
-    // TODO fetch server info from DB
+    // === Get server data from DB
     const serverData = await db.getServerData(message.guild.id)
     if(!serverData.prefix) serverData.prefix = config.prefix
     const prefix = serverData.prefix
@@ -96,6 +96,11 @@ client.on('message', async message => {
     if (!command) return
 
     // == CHECK COMMAND OPTIONS ==
+
+    // command disabled
+    if(serverData.disabled && serverData.disabled.includes(command.type)) {
+        return helper.replyCustomError(message, 'Access denied! Resistance is futile!', 'Sorry but this feature has been disabled on this server...')
+    }
 
     // role restricted
     if (command.roleRestrict && !helper.checkRole(message.member, command.roleRestrict, serverData.roles) ) { 

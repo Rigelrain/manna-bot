@@ -44,10 +44,13 @@ Sensitive tokens should be saved into Heroku Dashboard in Config Vars. In code t
 {
     serverID: String, // ID of the server, cannot be set by commands
     prefix: String,
+    disabled: [String], // disabled features, corresponds to command's type
     roles: {
         moderator: String, // ID of role that can edit bot settings
         requester: String, // ID of role that can initiate requests
         pledger: String, // ID of role that can respond to requests
+        queue: [String], // IDs of roles that use queues
+        queuemod: [String], // IDs of roles that create queues
     },
     requestTypes: [String], // an array of allowed requests
     queueCategory: String, // category to use for queues

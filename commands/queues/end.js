@@ -2,6 +2,7 @@ const helper = require('../../js/helpers')
 const Queue = require('../../schemas/queue')
 
 const options = {
+    type: 'queues',
 
     name: 'close',
     aliases: ['delete', 'qend', 'qclose'],

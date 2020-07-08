@@ -5,6 +5,7 @@ const helper = require('../../js/helpers')
  */
 
 const options = {
+    type: 'donations',
 
     name: 'gettypes',
     aliases: ['getypes', 'getype', 'gettype', 'showtypes', 'checktype', 'checktypes', 'check'],

@@ -75,6 +75,9 @@ async function execute(message) {
     if(message.roles && message.roles.queuemod && message.roles.queuemod.length > 0) {
         detailStr += helper.returnRoleNames(message, 'queuemod', message.roles)
     }
+    else if(message.roles && message.roles.queue && message.roles.queue.length > 0) {
+        detailStr += helper.returnRoleNames(message, 'queue', message.roles)
+    }
     else {
         detailStr += 'everyone'
     }

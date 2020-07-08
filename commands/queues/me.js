@@ -6,6 +6,7 @@ const User = require('../../schemas/user')
  */
 
 const options = {
+    type: 'queues',
 
     name: 'me',
     aliases: ['myinfo'],

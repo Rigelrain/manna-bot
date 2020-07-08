@@ -6,6 +6,7 @@ const Queue = require('../../schemas/queue')
  */
 
 const options = {
+    type: 'queues',
 
     name: 'list',
     aliases: ['ls', 'queues', 'a'],
@@ -13,6 +14,7 @@ const options = {
     description: 'Lists all currently active queues.',
 
     cooldown: 5,
+    roleRestrict: 'queue',
 }
 
 async function execute(message) {

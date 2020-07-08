@@ -4,6 +4,7 @@ const Schema = mongoose.Schema
 const serverSchema = new Schema({
     serverID: String, // ID of the server, cannot be set by commands
     prefix: String,
+    disabled: [String], // disabled features, corresponds to command's type
     roles: {
         moderator: [String], // IDs of roles that can edit bot settings
         requester: [String], // IDs of roles that can initiate requests

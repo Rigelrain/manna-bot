@@ -48,25 +48,38 @@ module.exports = {
             if(!roles 
                 || !roles.pledger 
                 || roles.pledger.length == 0
-                || member.roles.some(r => roles.pledger.includes(r.id))) {
+                || member.roles.cache.some(r => roles.pledger.includes(r.id))) {
                 //console.log('[ DEBUG ] Allowing access for pledger.')
                 roleMatch = true
             }
             break
         case 'queuemod':
-            if(!roles 
-                    || !roles.queuemod 
-                    || roles.queuemod.length == 0
-                    || member.roles.some(r => roles.queuemod.includes(r.id))) {
-                //console.log('[ DEBUG ] Allowing access for queuemod.')
+            // if no roles at all, auto-allow
+            if(!roles) {
                 roleMatch = true
             }
+            // if queuemod is set, check that member has that role
+            else if(roles.queuemod && roles.queuemod.length > 0) {
+                if(member.roles.cache.some(r => roles.queuemod.includes(r.id))) {
+                    roleMatch = true
+                }
+                // else do not allow!   
+            }
+            // if instead queues
+            else if(roles.queue && roles.queue.length > 0) {
+                if(member.roles.cache.some(r => roles.queue.includes(r.id))) {
+                    roleMatch = true
+                }
+            }
+            /* if(roleMatch == true) {
+                console.log('[ DEBUG ] Allowing access for queuemod.')
+            } */
             break
         case 'queue':
             if(!roles 
                 || !roles.queue 
                 || roles.queue.length == 0
-                || member.roles.some(r => roles.queue.includes(r.id))) {
+                || member.roles.cache.some(r => roles.queue.includes(r.id))) {
                 //console.log('[ DEBUG ] Allowing access for queue.')
                 roleMatch = true
             }

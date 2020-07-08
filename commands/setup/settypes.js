@@ -7,6 +7,7 @@ const Server = require('../../schemas/server')
  */
 
 const options = {
+    type: 'donations',
 
     name: 'settype',
     aliases: ['settypes', 'addtype', 'addtypes'],

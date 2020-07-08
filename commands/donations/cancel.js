@@ -7,11 +7,12 @@ const db = require('../../js/db')
  */
 
 const options = {
+    type: 'donations',
 
     name: 'cancel',
     aliases: ['cancelreq', 'cancelrequest', 'endrequest'],
 
-    description: 'Cancel the previous request.',
+    description: 'Cancel the previous donation request.',
     minArgs: 0,
 
     roleRestrict: 'requester',
