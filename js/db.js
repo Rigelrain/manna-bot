@@ -7,7 +7,6 @@ module.exports = {
         // exclude fields that do not matter for our purposes
         const data =  await Server.findOne({serverID: id}, { __v: 0}).lean().exec()
 
-        // TODO test with no entry in DB!
         // console.log(`[ DB ] Server: ${JSON.stringify(data, null, 2 )}`)
         if(!data) { // return an empty object
             return {}

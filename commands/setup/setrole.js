@@ -56,11 +56,10 @@ async function execute(message, args) {
     if (!message.mentions.roles.size) { 
         // no role was mentioned, so try if it was written as plain
         // TODO this should probably be all remaining args joined?
-        const textRole = args.shift()
+        const textRole = args.join(' ')
         console.log(`[ DEBUG ] Trying to find role ${textRole}`)
         try {
             const role = message.guild.roles.cache.find(r => r.name.toLowerCase() == textRole.toLowerCase())
-            console.log(role)
             if(!role) { throw 'No role' }
             roles.push(role.id)
             roleNames.push(role.name)

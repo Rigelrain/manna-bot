@@ -101,7 +101,7 @@ async function execute(message, args) {
     const replymsg = await message.channel.send(replyEmbed)
 
     // === Add Reaction watcher
-    // TODO implement for joining
+    // TODO implement reactons for joining
 
     // === Save to DB
     try {
