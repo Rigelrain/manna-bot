@@ -1,1 +1,1 @@
-worker: node queuebot.js
+worker: node bot.js
