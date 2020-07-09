@@ -1,5 +1,6 @@
 const helper = require('../../js/helpers')
 const config = require('../../config/config')
+const Server = require('../../schemas/server')
 
 /**
  * Replace all server request types with a preset   
@@ -19,19 +20,19 @@ const options = {
     cooldown: 2,
 }
 
-async function execute(message) { 
-    console.log('[ INFO ] Fetching server request type presets...')
+async function execute(message, args) { 
+    const preset = args.join(' ')
+    console.log(`[ INFO ] Replace server request types with preset ${preset}...`)
 
-    let msg = ''
-
-    for(const preset in config.reqtypePresets) {
-        msg += `${preset}: ${config.reqtypePresets[preset].join(', ')}\n`
+    if(!(preset in config.reqtypePresets)) {
+        return helper.replyCustomError(message, 'Can\'t find that preset...', `Available presets are: ${Object.keys(config.reqtypePresets).join(', ')}`)
     }
 
-    msg += `\nTo use a preset as server request types, use command \`${message.prefix}usepreset <preset name>\`. This will override all your server's current request types!
-    After using a preset, you can edit it normally by using \`${message.prefix}setype <add/remove> <type(s)>\`.`
+    const updated = await Server.findOneAndUpdate({ serverID: message.guild.id }, { requestTypes: config.reqtypePresets[preset] }, {lean: true, new: true}).exec()
 
-    return helper.replySuccess(message, 'Available preset names and values', msg, true)
+    console.log(`[ INFO ] Replaced server request types with ${updated.requestTypes}...`)
+
+    return helper.replySuccess(message, `Now using a preset ${preset}!`, `You can add/remove types from this set with command \`${message.prefix}settype <add/remove> <type(s)>\``, true)
 }
 
 module.exports = options
