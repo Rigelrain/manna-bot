@@ -119,6 +119,18 @@ module.exports = {
             return e.message
         }
     },
+    /**
+     * Checks whether a feature is allowed in the server
+     * @param {*} message - Discord API message object
+     * @param {string} feature - feature to be checked
+     */
+    checkFeature(message, feature) {
+        let featureMatch = true
+
+        if(message.disabled && message.disabled.includes(feature)) featureMatch = false
+
+        return featureMatch
+    },
     isAdd(raw) {
         if(raw == 'add') return true
         if(raw == 'remove') return false
@@ -147,7 +159,7 @@ module.exports = {
     async replyInfo(channel, prefix, title, description) {
         const embed = new Discord.MessageEmbed()
             .setColor(config.colors.info)
-            .setAuthor('Manna', 'https://i.imgur.com/kv48dQf.png', 'https://github.com/Rigelrain/PledgeBot')
+            .setAuthor('Manna', 'https://i.imgur.com/kv48dQf.png', 'https://github.com/Rigelrain/manna-bot')
             .setTitle(title? title : 'Oh wow, a new place!')
             .setDescription(description? description : `Hi, I'm Manna! You can see all my commands by using \`${prefix}help\``)
             .setFooter('from Rigelrain bot factory')

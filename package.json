@@ -18,9 +18,9 @@
   "author": "Sade Sirén",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/Rigelrain/PledgeBot/issues"
+    "url": "https://github.com/Rigelrain/manna-bot/issues"
   },
-  "homepage": "https://github.com/Rigelrain/PledgeBot#readme",
+  "homepage": "https://github.com/Rigelrain/manna-bot#readme",
   "devDependencies": {
     "eslint": "^7.4.0"
   },
