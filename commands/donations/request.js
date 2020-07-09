@@ -58,7 +58,7 @@ async function execute(message, args) {
 
     const reqEmbed = new Discord.MessageEmbed()
         .setColor(helper.getRandomColor())
-        .setTitle(`Request for ${amount? amount : ''} ${reqtype}`)
+        .setTitle(`🎁 Request for ${amount? amount : ''} ${reqtype} 🎁`)
         .setDescription(`For who? --> ${message.author}${description? '\n**Details**: ' + description : ''}`)
         .setFooter('')
     

@@ -61,7 +61,7 @@ async function execute(message, args) {
 
         helpEmbed.addField('Info', `${cmd.description}${cmd.help? '\n' + cmd.help : '' }`)
 
-        helpEmbed.addField('Notes:', `Do not include <> nor [] - <> means required and [] means optional.\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`)
+        helpEmbed.addField('Notes:', 'Do not include <> nor [] - <> means required and [] means optional.')
 
         return message.channel.send(helpEmbed)
     }

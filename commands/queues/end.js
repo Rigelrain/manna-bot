@@ -46,7 +46,7 @@ async function execute(message, args) {
     const queueMsg = await queueListChannel.messages.fetch(queue.messageID)
     const queueMsgEmbed = queueMsg.embeds[0]
 
-    queueMsgEmbed.title = `Queue \`${queue.name}\` has ended.`
+    queueMsgEmbed.title = `👤 Queue \`${queue.name}\` has ended. 👤`
     queueMsgEmbed.description = 'Queue channel has been voided...'
 
     await queueMsg.edit(queueMsgEmbed)

@@ -80,7 +80,7 @@ async function execute(message, args) {
     try {
         const queueEmbed = new Discord.MessageEmbed()
             .setColor(config.colors.info)
-            .setTitle(`**Queue ${name}**`)
+            .setTitle(`👤 Queue ${name} 👤`)
             .setDescription(message.queueMsg ? message.queueMsg : config.queueCreateMsg)
             .addField(`Capacity:  \` ${capacity} \``, `Host: ${message.author}`)
             .addField('Relevant commands:', `Leave queue: \`${message.prefix}leave\` (you will lose this channel and your spot in this queue)
@@ -95,7 +95,7 @@ async function execute(message, args) {
     // === Reply success, needs to be first so we can save msg id to DB
     const replyEmbed = new Discord.MessageEmbed()
         .setColor(helper.getRandomColor())
-        .setTitle(`Queue \`${name}\` created.`)
+        .setTitle(`👤 Queue \`${name}\` created. 👤`)
         .setDescription(`Channel: ${queueChannel}`)
         .addField('Slots taken', `0 / ${capacity}`)
     const replymsg = await message.channel.send(replyEmbed)
