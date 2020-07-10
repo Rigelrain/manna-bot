@@ -43,6 +43,6 @@ module.exports = {
     You can also set role restrictions on who can use the queues (see about roles)`,
     other_notes: `General use instructions:
     - It's best practice to give the bot some specific role that you can use to limit the channels the bot can use. Ex. make a Manna role that can only access channel #donations.
-    - Bot needs *at least* 'Read messages', 'Send messages', 'Manage messages', 'Manage channels' permissions for the channel(s) it is supposed to operate in. The manage messages is needed so that the bot can delete the command messages (to keep the channel cleaner) and edit past donations. The manage channels is used for creating and deleting the queue channels.
+    - Bot needs *at least* 'Read messages', 'Send messages', 'Manage messages', 'Manage roles', 'Manage channels' permissions for the channel(s) it is supposed to operate in. The manage messages is needed so that the bot can delete the command messages (to keep the channel cleaner) and edit past donations. The manage roles and channels is used for creating and deleting the queue channels and adding people to them.
     - The bot has no control over how the donations are actually given to the requester. Requester is notified on who pledged and for how much. It is recommended these be handled via DMs.`,
 }
