@@ -51,7 +51,7 @@ async function execute(message) {
     // delete req from db
     await db.deleteRequest(req._id)
 
-    // DM the requester
+    // Send DM to requester
     message.author.send(`Your request was cancelled! Check ${message.channel}`)
     message.author.send(reqEmbed).catch((e) => {
         console.log(`[ ERROR ] Could not send cancel DM to ${message.author.tag} ${e.message}`)

@@ -55,7 +55,6 @@ async function execute(message, args) {
     let roleNames = [] // this is just for the reply message
     if (!message.mentions.roles.size) { 
         // no role was mentioned, so try if it was written as plain
-        // TODO this should probably be all remaining args joined?
         const textRole = args.join(' ')
         console.log(`[ DEBUG ] Trying to find role ${textRole}`)
         try {

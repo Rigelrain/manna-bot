@@ -155,6 +155,6 @@ process.on('unhandledRejection', error => console.error('Uncaught Promise Reject
 
 // TODO list:
 /**
- * - Add default types
  * - add possibility to limit the amount of requests per day per user
+ * - add a system to create queue member infos dynamically
  */

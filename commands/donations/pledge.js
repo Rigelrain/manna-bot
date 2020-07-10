@@ -32,7 +32,6 @@ async function execute(message, args) {
     }
     const requester = message.mentions.users.first()
     if(!requester) {
-        // TODO this might be redundant
         return helper.replyCustomError(message, 'You must name a valid user', `Mention the user in your pledge message, see usage: ${message.prefix}${options.name} ${options.usage}`)
     }
     console.log(`[ DEBUG ] ${message.author} wants to donate to ${requester} (id ${requester.id})`)
