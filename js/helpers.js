@@ -58,7 +58,8 @@ module.exports = {
             if(!roles) {
                 roleMatch = true
             }
-            if(!roles.queuemod && !roles.queue) { // neither i set
+            if((!roles.queuemod || roles.queuemod.length == 0) 
+                && (!roles.queue || roles.queue.length == 0)) { // neither i set
                 roleMatch = true
             }
             // if queuemod is set, check that member has that role
