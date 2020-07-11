@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Server = require('../../schemas/server')
 
 /**
@@ -33,7 +33,7 @@ async function execute(message, args) {
     // cannot use findById here, since server info might not exist yet
     await Server.findOneAndUpdate({serverID: message.guild.id}, {prefix: newprefix}, { upsert: true} ).exec()
 
-    return helper.replySuccess(message, 'Prefix changed!', `From now on, please use \`${newprefix}\` to call me`)
+    return reply.success(message, 'Prefix changed!', `From now on, please use \`${newprefix}\` to call me`)
 }
 
 module.exports = options

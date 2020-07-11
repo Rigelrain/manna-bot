@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Queue = require('../../schemas/queue')
 const User = require('../../schemas/user')
 const config = require('../../config/config')
@@ -21,7 +21,7 @@ const options = {
 async function execute(message, args) {
 
     if(!(message.queueCategory && message.queueChannel)) {
-        return helper.replyCustomError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
+        return reply.customError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
     }
 
     let queueName = args.join('-').toLowerCase()
@@ -39,12 +39,12 @@ async function execute(message, args) {
 
     // if queue not found, abort
     if (!queue) {
-        return helper.replyCustomError(message, 'Oops!', `Either \`${queueName}\` doesn't exist or it isn't your queue... Maybe check the spelling? Or use this in the queue channel`, `> No queue ${queueName} found. Aborting.`)
+        return reply.customError(message, 'Oops!', `Either \`${queueName}\` doesn't exist or it isn't your queue... Maybe check the spelling? Or use this in the queue channel`, `> No queue ${queueName} found. Aborting.`)
     }
 
     const nextUserID = queue.users.shift() // the ID of the next-in-line
     if(!nextUserID) {
-        return helper.replySuccess(message, 'Queue is empty!', null, true)
+        return reply.success(message, 'Queue is empty!', null, true)
     }
 
     // remove user from queue, update the taken
@@ -59,7 +59,7 @@ async function execute(message, args) {
 
     const nextUser = await User.findOne({ userID: nextUserID}).exec()
 
-    await helper.replyToChannel(message, queue.channelID, 
+    await reply.sendToChannel(message, queue.channelID, 
         'Next up is...', 
         `User: <@${nextUser.userID}>
         IGN: ${nextUser.ign}

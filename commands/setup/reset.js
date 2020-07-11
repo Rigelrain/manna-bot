@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Server = require('../../schemas/server')
 
 
@@ -25,7 +25,7 @@ async function execute(message) {
     // cannot use findById here, since server info might not exist yet
     await Server.findOneAndDelete({serverID: message.guild.id}).exec()
     
-    return helper.replySuccess(message, 'All back to normal!', 'Now to just determine what normal really is... Anyway, I\'ve gone back to using my default settings.', true)
+    return reply.success(message, 'All back to normal!', 'Now to just determine what normal really is... Anyway, I\'ve gone back to using my default settings.', true)
 }
 
 module.exports = options

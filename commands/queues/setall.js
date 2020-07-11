@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const User = require('../../schemas/user')
 
 const options = {
@@ -22,7 +22,7 @@ async function execute(message, args) {
     const values = args.join(' ').split(' | ')
 
     if (values.length != 2) {
-        return helper.replyCustomError(message, 'Oops! Could not parse what you\'re trying to set.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``)
+        return reply.customError(message, 'Oops! Could not parse what you\'re trying to set.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``)
     }
 
     console.log(`[ INFO ] Updating userdata for user ${message.author.id}`)
@@ -32,7 +32,7 @@ async function execute(message, args) {
 
     console.log(`[ INFO ]  > Userdata set to ${newData}`)
 
-    return helper.replySuccess(message, 'Got your info!', `**IGN**: \`${newData.ign || '[no data]'}\` \n**Island name**: \`${newData.island || '[no data]'}\``, true)
+    return reply.success(message, 'Got your info!', `**IGN**: \`${newData.ign || '[no data]'}\` \n**Island name**: \`${newData.island || '[no data]'}\``, true)
 }
 
 module.exports = options

@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const db = require('../../js/db')
 
 /**
@@ -24,7 +24,7 @@ async function execute(message) {
     // Get the request from DB
     const req = await db.getRequestData(message.author.id)
     if(!req) {
-        return helper.replyCustomError(message, 'Sorry! I can\'t find any old requests from you')
+        return reply.customError(message, 'Sorry! I can\'t find any old requests from you')
     }
 
     // fetch req msg and send it as DM
@@ -58,7 +58,7 @@ async function execute(message) {
         message.reply('Your request was cancelled! But it seems like I can\'t DM you the details. Do you have DMs disabled?')
     })
 
-    return helper.replySuccess(message, 'Old request cancelled!')
+    return reply.success(message, 'Old request cancelled!')
 }
 
 module.exports = options

@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const User = require('../../schemas/user')
 const Queue = require('../../schemas/queue')
 
@@ -31,7 +31,7 @@ async function execute(message) {
     // remove the user from user database
     await User.findOneAndDelete({userID: authorID})
 
-    return helper.replySuccess(message, 'Deleted!', 'Your data has now been removed.')
+    return reply.success(message, 'Deleted!', 'Your data has now been removed.')
 }
 
 module.exports = options

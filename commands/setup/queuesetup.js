@@ -1,5 +1,5 @@
 const info = require('../../config/botinfo')
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Server = require('../../schemas/server')
 
 /**
@@ -31,7 +31,7 @@ async function execute(message, args) {
 
     // get the queue channel from mentions
     if(!message.mentions.channels.size) {
-        return helper.replyCustomError(message, 'No channel?', `You need to mention a channel in your setup message. Usage: ${message.prefix}${options.usage}`)
+        return reply.customError(message, 'No channel?', `You need to mention a channel in your setup message. Usage: ${message.prefix}${options.usage}`)
     }
     update.queueChannel = message.mentions.channels.first().id
 
@@ -44,7 +44,7 @@ async function execute(message, args) {
         }
     }
     if(!update.queueCategory) {
-        return helper.replyCustomError(message, 'No category?', `You need to give a category ID in your setup message. Usage: ${message.prefix}${options.usage}`)
+        return reply.customError(message, 'No category?', `You need to give a category ID in your setup message. Usage: ${message.prefix}${options.usage}`)
     }
 
     console.log(`[ DEBUG ] Trying to update server with info: ${JSON.stringify(update, null, 2)}`)
@@ -54,7 +54,7 @@ async function execute(message, args) {
 
     console.log(`[ DEBUG ] Updated server info to ${JSON.stringify(updated, null, 2)}`)
 
-    return helper.replySuccess(message, 'Queue info is set!', 'You can now start using queues.', true)
+    return reply.success(message, 'Queue info is set!', 'You can now start using queues.', true)
 }
 
 module.exports = options

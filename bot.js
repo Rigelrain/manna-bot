@@ -8,7 +8,8 @@ const token = process.env.TOKEN || require('./config/token').token
 const mongoURL = process.env.DBPATH || require('./config/mongodb_config').path
 const mongoDBname = process.env.DBNAME || require('./config/mongodb_config').dbname
 
-const helper = require('./js/helpers')
+const {checkRole} = require('./js/helpers')
+const reply = require('./js/reply')
 const db = require('./js/db')
 
 // == DATABASE
@@ -52,7 +53,7 @@ client.once('ready', () => {
 //   ===    Initial bot message when it joins new server   ===
 client.on('guildCreate', server => {
     try {
-        helper.replyInfo(server.systemChannel, config.prefix)
+        reply.sendInfo(server.systemChannel, config.prefix)
         console.log(`[ INFO ] Joined server ${server.name}`)
     }
     catch(e) {
@@ -77,7 +78,7 @@ client.on('message', async message => {
 
     // if bot is used by mentioning --> send general command help
     if (message.mentions.has(client.user)) {
-        return helper.replyInfo(message.channel, prefix, 'Hello there!')
+        return reply.sendInfo(message.channel, prefix, 'Hello there!')
     }
 
     // ignore messages that dont start with a valid prefix
@@ -99,17 +100,17 @@ client.on('message', async message => {
 
     // command disabled
     if(serverData.disabled && serverData.disabled.includes(command.type)) {
-        return helper.replyCustomError(message, 'Access denied! Resistance is futile!', 'Sorry but this feature has been disabled on this server...')
+        return reply.customError(message, 'Access denied! Resistance is futile!', 'Sorry but this feature has been disabled on this server...')
     }
 
     // role restricted
-    if (command.roleRestrict && !helper.checkRole(message.member, command.roleRestrict, serverData.roles) ) { 
-        return helper.replyCustomError(message, 'Can\'t allow that', 'You do not have permissions to give that command to me.')
+    if (command.roleRestrict && !checkRole(message.member, command.roleRestrict, serverData.roles) ) { 
+        return reply.customError(message, 'Can\'t allow that', 'You do not have permissions to give that command to me.')
     }
 
     // argument count
     if (command.minArgs && args.length < command.minArgs) {
-        return helper.replyCustomError(message, 'Oops! Are you missing something?', `Usage: \`${prefix}${command.name} ${command.usage}\``)
+        return reply.customError(message, 'Oops! Are you missing something?', `Usage: \`${prefix}${command.name} ${command.usage}\``)
     }
 
     // == COOLDOWN HANDLING ==
@@ -125,7 +126,7 @@ client.on('message', async message => {
 
             if (now < expirationTime) {
                 const timeLeft = (expirationTime - now) / 1000
-                return helper.replyCustomError(message, 'Patience!', `Wait ${timeLeft.toFixed(1)} more second(s) to call this again.`)
+                return reply.customError(message, 'Patience!', `Wait ${timeLeft.toFixed(1)} more second(s) to call this again.`)
             }
         }
         timestamps.set(message.author.id, now)
@@ -142,7 +143,7 @@ client.on('message', async message => {
     // == ACTUAL COMMAND CALL ==
     command.execute(message, args)
         .catch(err => {
-            helper.replyGeneralError(message, err)
+            reply.generalError(message, err)
         })
 }) 
 

@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Server = require('../../schemas/server')
 
 /**
@@ -33,7 +33,7 @@ async function execute(message, args) {
 
     console.log(`[ DEBUG ] Updated server info to ${JSON.stringify(updated, null, 2)}`)
 
-    return helper.replySuccess(message, 'Queue message is set!', null, true)
+    return reply.success(message, 'Queue message is set!', null, true)
 }
 
 module.exports = options

@@ -1,7 +1,8 @@
 const info = require('../../config/botinfo')
 const Discord = require('discord.js')
 const db = require('../../js/db')
-const helper = require('../../js/helpers')
+const {getRandomColor} = require('../../js/helpers')
+const reply = require('../../js/reply')
 
 /**
  * Request for a donation
@@ -29,13 +30,13 @@ const options = {
 async function execute(message, args) {
     // check that the user doesn't already have a pending request
     if(await db.getRequestData(message.author.id)) {
-        return helper.replyCustomError(message, 'You\'re asking for too much', 'Please cancel your previous request before starting a new one')
+        return reply.customError(message, 'You\'re asking for too much', 'Please cancel your previous request before starting a new one')
     }
 
     const reqtype = args.pop().toLowerCase()
 
     if(message.requestTypes.length > 0 && !message.requestTypes.includes(reqtype)) {
-        return helper.replyCustomError(message, 'Sorry but you can\'t ask for that!', `You can check the valid requests with command \`${message.prefix}check\``)
+        return reply.customError(message, 'Sorry but you can\'t ask for that!', `You can check the valid requests with command \`${message.prefix}check\``)
     }
 
     let amount, description
@@ -57,7 +58,7 @@ async function execute(message, args) {
     }
 
     const reqEmbed = new Discord.MessageEmbed()
-        .setColor(helper.getRandomColor())
+        .setColor(getRandomColor())
         .setTitle(`🎁 Request for ${amount? amount : ''} ${reqtype} 🎁`)
         .setDescription(`For who? --> ${message.author}${description? '\n**Details**: ' + description : ''}`)
         .setFooter('')
@@ -66,13 +67,13 @@ async function execute(message, args) {
     // pledge will check the amount fields to know if it should
     // add a progress title (as a field)
 
-    const reply = await message.channel.send(reqEmbed)
+    const msgreply = await message.channel.send(reqEmbed)
     message.delete({timeout: 1000})
 
     const reqDocument = {
         serverID: message.guild.id,
         userID: message.author.id,
-        messageID: reply.id,
+        messageID: msgreply.id,
         type: reqtype,
         amount: amount,
         remaining: amount,
@@ -87,7 +88,7 @@ async function execute(message, args) {
         Details: ${description}`)
     }
     catch(e) {
-        helper.replyCustomError(message, 'Oopsie with the request!', `${message.author}, I encountered an issue saving your request to the database, sorry!`, `Error in saving request to DB: ${e}`, true)
+        reply.customError(message, 'Oopsie with the request!', `${message.author}, I encountered an issue saving your request to the database, sorry!`, `Error in saving request to DB: ${e}`, true)
     }
 }
 

@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Queue = require('../../schemas/queue')
 
 const options = {
@@ -17,7 +17,7 @@ const options = {
 
 async function execute(message, args) {
     if(!(message.queueCategory && message.queueChannel)) {
-        return helper.replyCustomError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
+        return reply.customError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
     }
 
     //const queueListChannelID = message.queueChannel
@@ -33,7 +33,7 @@ async function execute(message, args) {
 
     // if name not found, abort
     if (!queue) {
-        return helper.replyCustomError(message, 'Oops! Couldn\'t do that!', `Either \`${queueName}\` doesn't exist or it isn't your queue... Maybe check the spelling?`, `> No queue ${queueName} found. Aborting.`)
+        return reply.customError(message, 'Oops! Couldn\'t do that!', `Either \`${queueName}\` doesn't exist or it isn't your queue... Maybe check the spelling?`, `> No queue ${queueName} found. Aborting.`)
     }
 
     console.log(`[ INFO ]  > Queue "${queueName}" deleted.`)

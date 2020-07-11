@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const config = require('../../config/config')
 const Server = require('../../schemas/server')
 
@@ -25,14 +25,14 @@ async function execute(message, args) {
     console.log(`[ INFO ] Replace server request types with preset ${preset}...`)
 
     if(!(preset in config.reqtypePresets)) {
-        return helper.replyCustomError(message, 'Can\'t find that preset...', `Available presets are: ${Object.keys(config.reqtypePresets).join(', ')}`)
+        return reply.customError(message, 'Can\'t find that preset...', `Available presets are: ${Object.keys(config.reqtypePresets).join(', ')}`)
     }
 
     const updated = await Server.findOneAndUpdate({ serverID: message.guild.id }, { requestTypes: config.reqtypePresets[preset] }, {lean: true, new: true}).exec()
 
     console.log(`[ INFO ] Replaced server request types with ${updated.requestTypes}...`)
 
-    return helper.replySuccess(message, `Now using a preset ${preset}!`, `You can add/remove types from this set with command \`${message.prefix}settype <add/remove> <type(s)>\``, true)
+    return reply.success(message, `Now using a preset ${preset}!`, `You can add/remove types from this set with command \`${message.prefix}settype <add/remove> <type(s)>\``, true)
 }
 
 module.exports = options

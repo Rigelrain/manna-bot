@@ -1,6 +1,7 @@
 const info = require('../../config/botinfo')
 const Server = require('../../schemas/server')
-const helper = require('../../js/helpers')
+const {checkIsAdd} = require('../../js/helpers')
+const reply = require('../../js/reply')
 const config = require('../../config/config')
 
 /**
@@ -33,16 +34,16 @@ async function execute(message, args) {
     const rawAddRemove = args.shift().toLowerCase()
     let isAdd
     try {
-        isAdd = helper.isAdd(rawAddRemove)
+        isAdd = checkIsAdd(rawAddRemove)
     }
     catch(e) {
-        return helper.replyCustomError(message, e, `Bot usage: ${message.prefix}${options.usage}`)
+        return reply.customError(message, e, `Bot usage: ${message.prefix}${options.usage}`)
     }
     console.log(`[ DEBUG ] ${isAdd? 'Adding' : 'Removing'} roles...`)
 
     const roletype = args.shift().toLowerCase()
     if(!config.roletypes.includes(roletype)) {
-        return helper.replyCustomError(message, 'That\'s not a type of role I\'m looking for...', `You must specify which kind of a role you are adding. Available options:
+        return reply.customError(message, 'That\'s not a type of role I\'m looking for...', `You must specify which kind of a role you are adding. Available options:
         moderator - who can edit bot settings
         requester - who can make requests
         pledger - who can offer to pledge
@@ -64,7 +65,7 @@ async function execute(message, args) {
             roleNames.push(role.name)
         }
         catch(e) {
-            return helper.replyCustomError(message, 'That\'s not a role I\'m looking for...', 'You should mention one or more roles.')
+            return reply.customError(message, 'That\'s not a role I\'m looking for...', 'You should mention one or more roles.')
         }
     }
     else {
@@ -76,7 +77,7 @@ async function execute(message, args) {
             })
         }
         catch(e) {
-            return helper.replyGeneralError(message, e)
+            return reply.generalError(message, e)
         }
     }
     console.log(`[ DEBUG ] ${isAdd? 'Adding' : 'Removing'} roles ${roleNames.join(', ')}`)
@@ -93,7 +94,7 @@ async function execute(message, args) {
         await Server.findOneAndUpdate({serverID: message.guild.id}, { $pullAll: {[query]: roles} }, { upsert: true} ).exec()
     }
 
-    return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} ${roletype} is a success!`, `${isAdd? 'Added' : 'Removed'} following roles: ${roleNames.join(', ')}`, true)
+    return reply.success(message, `${isAdd? 'Adding' : 'Removing'} ${roletype} is a success!`, `${isAdd? 'Added' : 'Removed'} following roles: ${roleNames.join(', ')}`, true)
 }
 
 module.exports = options

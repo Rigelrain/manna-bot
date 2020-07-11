@@ -1,6 +1,6 @@
 const info = require('../../config/botinfo')
 const base = require('./setrole').execute
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 
 /**
  * Set requester role    
@@ -30,7 +30,7 @@ async function execute(message, args) {
     const baseArgs = ['pledger', ...args]
     base(message, baseArgs)
         .catch(e => {
-            helper.replyGeneralError(message, e)
+            reply.generalError(message, e)
         })
 }
 

@@ -2,6 +2,7 @@ const config = require('../../config/config')
 const Discord = require('discord.js')
 
 const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 
 const options = {
 
@@ -141,7 +142,7 @@ async function execute(message, args) {
         const cmd = commands.get(args[0]) || commands.find(cmd => cmd.aliases && cmd.aliases.includes(args[0]))
 
         if (!cmd) {
-            return helper.replyCustomError(message, 'Invalid command parameter', `That's not a valid command, sorry. I can't find any data of ${args[0]}`)
+            return reply.customError(message, 'Invalid command parameter', `That's not a valid command, sorry. I can't find any data of ${args[0]}`)
         }
 
         const helpEmbed = new Discord.MessageEmbed()

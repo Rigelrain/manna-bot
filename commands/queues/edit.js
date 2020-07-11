@@ -1,5 +1,5 @@
 const Queue = require('../../schemas/queue')
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 
 const options = {
     type: 'queues',
@@ -18,7 +18,7 @@ const options = {
 
 async function execute(message, args) {
     if(!(message.queueCategory && message.queueChannel)) {
-        return helper.replyCustomError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
+        return reply.customError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
     }
 
     const expandBy = parseInt(args.shift())
@@ -30,12 +30,12 @@ async function execute(message, args) {
         queue = await Queue.findOneAndUpdate({serverID: message.guild.id, channelID: message.channel.id}, {$inc: { capacity: expandBy }}, {lean:true, new: true}).exec()
     }
     catch(e) {
-        return helper.replyCustomError(message, 'Oops! Something went wrong...', null, `> Error from updating DB: ${e}`)
+        return reply.customError(message, 'Oops! Something went wrong...', null, `> Error from updating DB: ${e}`)
     }
 
     // if not in queue channel
     if (!queue) {
-        return helper.replyCustomError(message, 'Oops! You need to be in a queue channel to add capacity.', null, '> Not in correct channel. Aborting.')
+        return reply.customError(message, 'Oops! You need to be in a queue channel to add capacity.', null, '> Not in correct channel. Aborting.')
     }
 
     // edit the queue created msg
@@ -48,7 +48,7 @@ async function execute(message, args) {
     await queueMsg.edit(queueMsgEmbed)
 
     // confirmation message
-    return helper.replySuccess(message, `Available spots ${expandBy < 0? 'decreased': 'increased'} by ${expandBy}.`, `${queue.capacity - queue.taken} of ${queue.capacity} spots left.`, true)
+    return reply.success(message, `Available spots ${expandBy < 0? 'decreased': 'increased'} by ${expandBy}.`, `${queue.capacity - queue.taken} of ${queue.capacity} spots left.`, true)
 }
 
 module.exports = options

@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Queue = require('../../schemas/queue')
 
 /**
@@ -22,7 +22,7 @@ const options = {
 
 async function execute(message, args) {
     if(!(message.queueCategory && message.queueChannel)) {
-        return helper.replyCustomError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
+        return reply.customError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
     }
 
     let queueName = args.join('-').toLowerCase()
@@ -36,12 +36,12 @@ async function execute(message, args) {
 
     // if queue not found, abort
     if (!queue) {
-        return helper.replyCustomError(message, 'Oops! Could not find queue.', 'You should either write this in the queue channel or check the spelling.', `> No queue ${queueName} found. Aborting.`)
+        return reply.customError(message, 'Oops! Could not find queue.', 'You should either write this in the queue channel or check the spelling.', `> No queue ${queueName} found. Aborting.`)
     }
 
     // host cannot leave
     if(queue.host == message.author.id) {
-        return helper.replyCustomError(message, 'Are you trying to leave your own queue?', `I'm sorry I can't allow that... Others would be left hanging, you see? Did you perhaps mean  to use \`${message.prefix}close\` instead?`)
+        return reply.customError(message, 'Are you trying to leave your own queue?', `I'm sorry I can't allow that... Others would be left hanging, you see? Did you perhaps mean  to use \`${message.prefix}close\` instead?`)
     }
 
     // make channel invisible to user
@@ -68,12 +68,12 @@ async function execute(message, args) {
         await queueMsg.edit(queueMsgEmbed)
 
         // note the leaving in the queue channel
-        return helper.replyToChannel(message, queue.channelID, `${message.author.username} left queue`, `Queue filled: \`${queue.taken - 1}/${queue.capacity}\``)
+        return reply.sendToChannel(message, queue.channelID, `${message.author.username} left queue`, `Queue filled: \`${queue.taken - 1}/${queue.capacity}\``)
     }
     else {
         // assume that the user has been in line, but is now done
         
-        return helper.replySuccess(message, `${message.author.username} left the queue ${queueName}`)
+        return reply.success(message, `${message.author.username} left the queue ${queueName}`)
     }
 }
 

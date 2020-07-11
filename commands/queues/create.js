@@ -1,6 +1,7 @@
 const config = require('../../config/config')
 const Discord = require('discord.js')
-const helper = require('../../js/helpers')
+const {getRandomColor} = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Queue = require('../../schemas/queue')
 
 const options = {
@@ -22,7 +23,7 @@ async function execute(message, args) {
     // console.log(`[ DEBUG ] Creating queue started with args: ${JSON.stringify(args, null, 2)}`);
 
     if(!(message.queueCategory && message.queueChannel)) {
-        return helper.replyCustomError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
+        return reply.customError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
     }
 
     // === Extract capacity
@@ -30,18 +31,18 @@ async function execute(message, args) {
     const name = args.join('-').toLowerCase()
 
     if (isNaN(capacity) || capacity <= 0) {
-        return helper.replyCustomError(message, 'Oops! Queue capacity needs to be a positive number.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, `> Cannot create queue because invalid capacity: ${capacity}`)
+        return reply.customError(message, 'Oops! Queue capacity needs to be a positive number.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, `> Cannot create queue because invalid capacity: ${capacity}`)
     }
 
     // limit name length to 20 characters
     if (name.length > 20) {
-        return helper.replyCustomError(message, 'Oops! Name is too long. Max 20 chars.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, `> Cannot create queue because invalid name length: ${name.length}`)
+        return reply.customError(message, 'Oops! Name is too long. Max 20 chars.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, `> Cannot create queue because invalid name length: ${name.length}`)
     }
 
     // === Check that it doesn't exist already
     const existingQueues = await Queue.find({serverID: message.guild.id, name: name})
     if(existingQueues.length > 0) {
-        return helper.replyCustomError(message, 'Oops! A queue with that name already exists. Please choose a different name.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, '> Duplicate name. Aborting.')
+        return reply.customError(message, 'Oops! A queue with that name already exists. Please choose a different name.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, '> Duplicate name. Aborting.')
     }
 
     console.log(`[ INFO ] Creating queue with name "${name}" and capacity ${capacity}`)
@@ -94,7 +95,7 @@ async function execute(message, args) {
 
     // === Reply success, needs to be first so we can save msg id to DB
     const replyEmbed = new Discord.MessageEmbed()
-        .setColor(helper.getRandomColor())
+        .setColor(getRandomColor())
         .setTitle(`👤 Queue \`${name}\` created. 👤`)
         .setDescription(`Channel: ${queueChannel}`)
         .addField('Slots taken', `0 / ${capacity}`)

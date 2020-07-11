@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Queue = require('../../schemas/queue')
 
 /**
@@ -26,14 +26,14 @@ async function execute(message) {
 
     console.log(`[ INFO ]  > ${queues.length} currently active.`)
 
-    let reply = ''
+    let replyStr = ''
     queues.forEach((queue) => {
         // ~ reply += `\n<#${elem.channelID}>: `;
-        reply += `\n**${queue.name}** (host: <@${queue.host}>): `
-        reply += queue.available == 0 ? 'No spaces left.' : `${queue.taken} / ${queue.capacity}.`
+        replyStr += `\n**${queue.name}** (host: <@${queue.host}>): `
+        replyStr += queue.available == 0 ? 'No spaces left.' : `${queue.taken} / ${queue.capacity}.`
     })
 
-    return helper.replySuccess(message, `Currently ${queues.length} active queues.`, reply.length != '' ? reply : 'No active queues to display.', true)
+    return reply.success(message, `Currently ${queues.length} active queues.`, replyStr.length != '' ? replyStr : 'No active queues to display.', true)
 }
 
 module.exports = options

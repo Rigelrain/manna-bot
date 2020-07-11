@@ -1,5 +1,6 @@
 const info = require('../../config/botinfo')
-const helper = require('../../js/helpers')
+const {checkIsAdd} = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Server = require('../../schemas/server')
 
 /**
@@ -32,10 +33,10 @@ async function execute(message, args) {
     const rawAddRemove = args.shift().toLowerCase()
     let isAdd
     try {
-        isAdd = helper.isAdd(rawAddRemove)
+        isAdd = checkIsAdd(rawAddRemove)
     }
     catch(e) {
-        return helper.replyCustomError(message, e, `Bot usage: ${message.prefix}${options.usage}`)
+        return reply.customError(message, e, `Bot usage: ${message.prefix}${options.usage}`)
     }
 
     // safeguard against using commas
@@ -55,7 +56,7 @@ async function execute(message, args) {
         await Server.findOneAndUpdate({serverID: message.guild.id}, { $pullAll: {requestTypes: types} }, { upsert: true} ).exec()
     }
 
-    return helper.replySuccess(message, `${isAdd? 'Adding' : 'Removing'} request types succeeded!`, `${isAdd? 'Added' : 'Removed'} following types: ${types.join(' ')}`)
+    return reply.success(message, `${isAdd? 'Adding' : 'Removing'} request types succeeded!`, `${isAdd? 'Added' : 'Removed'} following types: ${types.join(' ')}`)
 }
 
 module.exports = options

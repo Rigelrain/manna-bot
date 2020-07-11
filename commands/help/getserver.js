@@ -1,4 +1,5 @@
-const helper = require('../../js/helpers')
+const {returnRoleNames} = require('../../js/helpers')
+const reply = require('../../js/reply')
 
 /**
  * Get server settings    
@@ -64,7 +65,7 @@ async function execute(message) {
     // mods
     detailStr += '\nCan moderate bot: '
     if(message.roles && message.roles.moderator && message.roles.moderator.length > 0) {
-        detailStr += helper.returnRoleNames(message, 'moderator', message.roles)
+        detailStr += returnRoleNames(message, 'moderator', message.roles)
     }
     else {
         detailStr += 'server administrator(s)'
@@ -74,7 +75,7 @@ async function execute(message) {
         // requesters
         detailStr += '\nCan request: '
         if(message.roles && message.roles.requester && message.roles.requester.length > 0) {
-            detailStr += helper.returnRoleNames(message, 'requester', message.roles)
+            detailStr += returnRoleNames(message, 'requester', message.roles)
         }
         else {
             detailStr += 'everyone'
@@ -82,7 +83,7 @@ async function execute(message) {
         // pledgers
         detailStr += '\nCan donate: '
         if(message.roles && message.roles.pledger && message.roles.pledger.length > 0) {
-            detailStr += helper.returnRoleNames(message, 'pledger', message.roles)
+            detailStr += returnRoleNames(message, 'pledger', message.roles)
         }
         else {
             detailStr += 'everyone'
@@ -93,24 +94,24 @@ async function execute(message) {
         // queues
         detailStr += '\nCan start a queue: '
         if(message.roles && message.roles.queuemod && message.roles.queuemod.length > 0) {
-            detailStr += helper.returnRoleNames(message, 'queuemod', message.roles)
+            detailStr += returnRoleNames(message, 'queuemod', message.roles)
         }
         else if(message.roles && message.roles.queue && message.roles.queue.length > 0) {
-            detailStr += helper.returnRoleNames(message, 'queue', message.roles)
+            detailStr += returnRoleNames(message, 'queue', message.roles)
         }
         else {
             detailStr += 'everyone'
         }
         detailStr += '\nCan join a queue: '
         if(message.roles && message.roles.queue && message.roles.queue.length > 0) {
-            detailStr += helper.returnRoleNames(message, 'queue', message.roles)
+            detailStr += returnRoleNames(message, 'queue', message.roles)
         }
         else {
             detailStr += 'everyone'
         }
     }
 
-    return helper.replySuccess(message, 'Here are the current settings in this server:', detailStr, true)
+    return reply.success(message, 'Here are the current settings in this server:', detailStr, true)
 }
 
 module.exports = options

@@ -1,6 +1,7 @@
 //const config = require('../config/config')
 // const Discord = require('discord.js')
-const helper = require('../../js/helpers')
+const {getProgress} = require('../../js/helpers')
+const reply = require('../../js/reply')
 const db = require('../../js/db')
 
 /**
@@ -28,11 +29,11 @@ async function execute(message, args) {
 
     //// Who to give to?
     if(!message.mentions.users.size) {
-        return helper.replyCustomError(message, 'Who are you donating to?', `Mention the user in your pledge message, see usage: ${message.prefix}${options.name} ${options.usage}`)
+        return reply.customError(message, 'Who are you donating to?', `Mention the user in your pledge message, see usage: ${message.prefix}${options.name} ${options.usage}`)
     }
     const requester = message.mentions.users.first()
     if(!requester) {
-        return helper.replyCustomError(message, 'You must name a valid user', `Mention the user in your pledge message, see usage: ${message.prefix}${options.name} ${options.usage}`)
+        return reply.customError(message, 'You must name a valid user', `Mention the user in your pledge message, see usage: ${message.prefix}${options.name} ${options.usage}`)
     }
     console.log(`[ DEBUG ] ${message.author} wants to donate to ${requester} (id ${requester.id})`)
     //// END User
@@ -65,7 +66,7 @@ async function execute(message, args) {
         }
     
         if(!amountFound) {
-            return helper.replyCustomError(message, 'That doesn\'t seem like a right amount...', `Please give the amount as a number or 'all' or 'full', see usage: ${message.prefix}${options.name} ${options.usage}`)
+            return reply.customError(message, 'That doesn\'t seem like a right amount...', `Please give the amount as a number or 'all' or 'full', see usage: ${message.prefix}${options.name} ${options.usage}`)
         }
     
         console.log(`[ DEBUG ] Wants to donate amount of ${amount}`)
@@ -103,7 +104,7 @@ async function execute(message, args) {
             inline: false,
         })
         if(!reqEmbed.footer) reqEmbed.footer = {} // for first donation
-        reqEmbed.footer.text = helper.getProgress(update.amount - update.remaining, update.amount)
+        reqEmbed.footer.text = getProgress(update.amount - update.remaining, update.amount)
 
         //console.log(reqEmbed)
 
@@ -128,7 +129,7 @@ async function execute(message, args) {
         console.log(`[ ERROR ] ${e}`)
     }
 
-    return helper.replySuccess(message, 'Donation succeeded!', `You've offered to give ${requester} ${amount} ${req.type}`)
+    return reply.success(message, 'Donation succeeded!', `You've offered to give ${requester} ${amount} ${req.type}`)
 }
 
 module.exports = options

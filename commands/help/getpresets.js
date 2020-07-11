@@ -1,4 +1,5 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
+
 const config = require('../../config/config')
 
 /**
@@ -31,7 +32,7 @@ async function execute(message) {
     msg += `\nTo use a preset as server request types, use command \`${message.prefix}usepreset <preset name>\`. This will override all your server's current request types!
     After using a preset, you can edit it normally by using \`${message.prefix}setype <add/remove> <type(s)>\`.`
 
-    return helper.replySuccess(message, 'Available preset names and values', msg, true)
+    return reply.success(message, 'Available preset names and values', msg, true)
 }
 
 module.exports = options

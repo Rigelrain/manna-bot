@@ -1,4 +1,5 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
+
 const User = require('../../schemas/user')
 
 /**
@@ -23,10 +24,10 @@ async function execute(message) {
 
     // if userdata not found, abort
     if (!user) {
-        return helper.replyCustomError(message, 'Oops! You haven\'t added your info yet.', `Use \`${message.prefix}set your-name | your-island\` to set that up`, '> User hasn\'t added info. Aborting.')
+        return reply.customError(message, 'Oops! You haven\'t added your info yet.', `Use \`${message.prefix}set your-name | your-island\` to set that up`, '> User hasn\'t added info. Aborting.')
     }
 
-    return helper.replySuccess(message, 'Your info:', `**IGN**: \`${user.ign || '[no data]'}\` \n**Island**: \`${user.island || '[no data]'}\``, true)
+    return reply.success(message, 'Your info:', `**IGN**: \`${user.ign || '[no data]'}\` \n**Island**: \`${user.island || '[no data]'}\``, true)
 }
 
 module.exports = options

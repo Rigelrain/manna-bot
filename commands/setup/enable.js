@@ -1,4 +1,4 @@
-const helper = require('../../js/helpers')
+const reply = require('../../js/reply')
 const Server = require('../../schemas/server')
 const info = require('../../config/botinfo')
 const config = require('../../config/config')
@@ -41,13 +41,13 @@ async function execute(message, args) {
     }
 
     if(!features || features.length == 0) {
-        return helper.replyCustomError(message, 'I couldn\'t see any valid features in that...', `Use \`${message.prefix}help ${options.name}\` for more info about features.`)
+        return reply.customError(message, 'I couldn\'t see any valid features in that...', `Use \`${message.prefix}help ${options.name}\` for more info about features.`)
     }
 
     // cannot use findById here, since server info might not exist yet
     const server = await Server.findOneAndUpdate({serverID: message.guild.id}, { $pullAll: {disabled: features}}, {new: true, lean: true}).exec()
     
-    return helper.replySuccess(message, 'Feature(s) enabled!', server.disabled && server.disabled.length > 0? `These features are still disabled: ${server.disabled.join(', ')}`: 'No features are disabled in this server', true)
+    return reply.success(message, 'Feature(s) enabled!', server.disabled && server.disabled.length > 0? `These features are still disabled: ${server.disabled.join(', ')}`: 'No features are disabled in this server', true)
 }
 
 module.exports = options
