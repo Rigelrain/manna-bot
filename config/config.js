@@ -17,6 +17,13 @@ module.exports = {
         random: ['#ffbbcc', '#ffdddd', '#ffccff', '#cceeff', '#ccccee', '#ccbbdd'],
     },
 
+    emojis: {
+        queue: '👥',
+        donation: '🎁',
+        giveaway: '🎉',
+        end: '🚫',
+    },
+
     queueCreateMsg: 'This is the channel where participants can chat about the queue. Please mind not to clog the channel with offtopic chat.',
 
     nextWaitTime: 300000, // how long a member is kept in queue channel before kick

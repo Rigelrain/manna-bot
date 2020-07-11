@@ -40,16 +40,18 @@ async function execute(message, args) {
 
     // delete channel
     const queueChannel = await message.guild.channels.cache.get(queue.channelID)
-    queueChannel.delete()
+    await queueChannel.delete()
 
     // edit the queue creation message
     const queueMsg = await queueListChannel.messages.fetch(queue.messageID)
     const queueMsgEmbed = queueMsg.embeds[0]
 
-    queueMsgEmbed.title = `👤 Queue \`${queue.name}\` has ended. 👤`
+    queueMsgEmbed.title = `👥 Queue \`${queue.name}\` has ended. 👥`
     queueMsgEmbed.description = 'Queue channel has been voided...'
+    delete queueMsgEmbed.footer
 
-    await queueMsg.edit(queueMsgEmbed)
+    await queueMsg.react('🚫')
+    queueMsg.edit(queueMsgEmbed)
 
     if(message.channel == queueListChannel) {
         // if command was given in the list channel, remove the clutter

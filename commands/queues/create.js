@@ -3,6 +3,7 @@ const Discord = require('discord.js')
 const {getRandomColor} = require('../../js/helpers')
 const reply = require('../../js/reply')
 const Queue = require('../../schemas/queue')
+const join = require('../../js/queuejoin')
 
 const options = {
     type: 'queues',
@@ -28,24 +29,24 @@ async function execute(message, args) {
 
     // === Extract capacity
     const capacity = parseInt(args.pop())
-    const name = args.join('-').toLowerCase()
+    const queueName = args.join('-').toLowerCase()
 
     if (isNaN(capacity) || capacity <= 0) {
         return reply.customError(message, 'Oops! Queue capacity needs to be a positive number.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, `> Cannot create queue because invalid capacity: ${capacity}`)
     }
 
-    // limit name length to 20 characters
-    if (name.length > 20) {
-        return reply.customError(message, 'Oops! Name is too long. Max 20 chars.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, `> Cannot create queue because invalid name length: ${name.length}`)
+    // limit queueName length to 20 characters
+    if (queueName.length > 20) {
+        return reply.customError(message, 'Oops! Name is too long. Max 20 chars.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, `> Cannot create queue because invalid name length: ${queueName.length}`)
     }
 
     // === Check that it doesn't exist already
-    const existingQueues = await Queue.find({serverID: message.guild.id, name: name})
+    const existingQueues = await Queue.find({serverID: message.guild.id, name: queueName})
     if(existingQueues.length > 0) {
-        return reply.customError(message, 'Oops! A queue with that name already exists. Please choose a different name.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, '> Duplicate name. Aborting.')
+        return reply.customError(message, 'Oops! A queue with that name already exists. Please choose a different name.', `Usage: \`${message.prefix}${options.name} ${options.usage}\``, '> Duplicate queueName. Aborting.')
     }
 
-    console.log(`[ INFO ] Creating queue with name "${name}" and capacity ${capacity}`)
+    console.log(`[ INFO ] Creating queue with name "${queueName}" and capacity ${capacity}`)
 
     // === Creating the new queue channel
     // create channel w/ perms (only allow needed people access to channel)
@@ -67,7 +68,7 @@ async function execute(message, args) {
 
     let queueChannel
     try {
-        queueChannel = await message.guild.channels.create(name, {
+        queueChannel = await message.guild.channels.create(queueName, {
             type: 'text',
             parent: message.queueCategory,
             permissionOverwrites: permissions,
@@ -81,12 +82,10 @@ async function execute(message, args) {
     try {
         const queueEmbed = new Discord.MessageEmbed()
             .setColor(config.colors.info)
-            .setTitle(`👤 Queue ${name} 👤`)
+            .setTitle(`👥 Queue ${queueName} 👥`)
             .setDescription(message.queueMsg ? message.queueMsg : config.queueCreateMsg)
             .addField(`Capacity:  \` ${capacity} \``, `Host: ${message.author}`)
-            .addField('Relevant commands:', `Leave queue: \`${message.prefix}leave\` (you will lose this channel and your spot in this queue)
-    Get next in line (host only): \`${message.prefix}next\`
-    Close queue (host only): \`${message.prefix}close\``)
+            .addField('Relevant commands:', `Leave queue: \`${message.prefix}leave\` (you will lose this channel and your spot in this queue)\nGet next in line (host only): \`${message.prefix}next\`\nClose queue (host only): \`${message.prefix}close\``)
         queueChannel.send(queueEmbed)
     }
     catch(e) {
@@ -96,13 +95,38 @@ async function execute(message, args) {
     // === Reply success, needs to be first so we can save msg id to DB
     const replyEmbed = new Discord.MessageEmbed()
         .setColor(getRandomColor())
-        .setTitle(`👤 Queue \`${name}\` created. 👤`)
+        .setTitle(`👤 Queue \`${queueName}\` created. 👤`)
         .setDescription(`Channel: ${queueChannel}`)
         .addField('Slots taken', `0 / ${capacity}`)
+        .setFooter(`React with ${config.emojis.queue} to join the queue!`)
     const replymsg = await message.channel.send(replyEmbed)
 
-    // === Add Reaction watcher
-    // TODO implement reactons for joining
+    // === Add Reaction colelctor that will handle joins and end when instructed
+    replymsg.react(config.emojis.queue)
+    const filter = (reaction, user) => {
+        // only accept reactions:
+        // - queue reaction from other users (NOT bot or the queue creator)
+        // - end reaction from the bot only (so no one else can end it)
+        return (user != replymsg.author && user != message.author && reaction.emoji.name === config.emojis.queue) 
+            || (user == replymsg.author && reaction.emoji.name === config.emojis.end)
+    }
+    
+    const collector = replymsg.createReactionCollector(filter)
+    
+    collector.on('collect', (reaction, user) => {
+        console.log(`Collected ${reaction.emoji.name} from ${user.tag}`)
+        if(reaction.emoji.name == config.emojis.end) {
+            // end the collection, remove queue reactions
+            replymsg.reactions.cache.get(config.emojis.queue).remove().catch(error => console.log(`[ ERROR ] Failed to remove queue reactions: ${JSON.stringify(error)}`))
+            collector.stop()
+            return
+        }
+        join(queueName, message.prefix, message.queueChannel, user, message.guild)
+    })
+    
+    collector.on('end', collected => {
+        console.log(`[ DEBUG ] Queue ${queueName} Collected ${collected.size} items`)
+    })
 
     // === Save to DB
     try {
@@ -111,7 +135,7 @@ async function execute(message, args) {
             serverID: message.guild.id,
             channelID: queueChannel.id,
             messageID: replymsg.id,
-            name: name,
+            name: queueName,
             host: message.author.id,
             capacity: capacity,
         })

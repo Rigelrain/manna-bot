@@ -68,6 +68,8 @@ async function execute(message, args) {
         Queue now has ${queue.users.length} members in line.
         There's still room for ${queue.capacity-queue.taken} people.`)
 
+    message.delete()
+
     // make channel invisible to the next user after a timeout
     setTimeout(async function(){
         await message.guild.channels.cache.get(queue.channelID).createOverwrite(nextUser.userID, { 'VIEW_CHANNEL': false, 'SEND_MESSAGES': false })
