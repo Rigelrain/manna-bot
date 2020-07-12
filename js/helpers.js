@@ -56,23 +56,22 @@ module.exports = {
             // if no roles at all, auto-allow
             if(!roles) {
                 roleMatch = true
+                break
             }
-            if((!roles.queuemod || roles.queuemod.length == 0) 
-                && (!roles.queue || roles.queue.length == 0)) { // neither i set
+            if(roles.queuemod 
+                && roles.queuemod.length > 0
+                && !member.roles.cache.some(r => roles.queuemod.includes(r.id))) {
+                roleMatch = false
+                //console.log('[ DEBUG ] Denying access for queuemod for not having queuemod role.')
+            }
+            else if(roles.queue
+                && roles.queue.length > 0
+                && !member.roles.cache.some(r => roles.queue.includes(r.id))) {
+                roleMatch = false
+                //console.log('[ DEBUG ] Denying access for queuemod for not having queue role.')
+            }
+            else {
                 roleMatch = true
-            }
-            // if queuemod is set, check that member has that role
-            else if(roles.queuemod && roles.queuemod.length > 0) {
-                if(member.roles.cache.some(r => roles.queuemod.includes(r.id))) {
-                    roleMatch = true
-                }
-                // else do not allow!   
-            }
-            // if instead queues
-            else if(roles.queue && roles.queue.length > 0) {
-                if(member.roles.cache.some(r => roles.queue.includes(r.id))) {
-                    roleMatch = true
-                }
             }
             /* if(roleMatch == true) {
                 console.log('[ DEBUG ] Allowing access for queuemod.')
@@ -83,6 +82,15 @@ module.exports = {
                 || !roles.queue 
                 || roles.queue.length == 0
                 || member.roles.cache.some(r => roles.queue.includes(r.id))) {
+                //console.log('[ DEBUG ] Allowing access for queue.')
+                roleMatch = true
+            }
+            break
+        case 'giveaway':
+            if(!roles 
+                || !roles.giveaway 
+                || roles.giveaway.length == 0
+                || member.roles.cache.some(r => roles.giveaway.includes(r.id))) {
                 //console.log('[ DEBUG ] Allowing access for queue.')
                 roleMatch = true
             }
@@ -158,5 +166,73 @@ module.exports = {
     getRandomColor() {
         const index = Math.floor(Math.random() * config.colors.random.length)
         return config.colors.random[index]
+    },
+    /**
+     * Converts a human-readable time string to milliseconds.
+     * @param {string} str - string representing time with a time unit, ex. 1day or 15mins
+     * @returns {number} time in millisecons
+     * @throws {string}
+     */
+    parsetime(str) {
+        let multiplier, time
+        // seconds
+        if(/seconds|sec|s$/i.test(str)) {
+            multiplier = 1
+            time = parseInt(str.replace(/sec|s$/i, ''))
+        }
+        else if(/minutes|min|mins|m$/i.test(str)) {
+            multiplier = 60
+            time = parseInt(str.replace(/min|m$/i, ''))
+        }
+        else if(/hours|h$/i.test(str)) {
+            multiplier = 3600
+            time = parseInt(str.replace(/hours|h$/i, ''))
+        }
+        else if(/days|d$/i.test(str)){
+            multiplier = 86400
+            time = parseInt(str.replace(/days|d$/i, ''))
+        }
+
+        if(!time || isNaN(time)) {
+            throw 'Oops! I can\'t find a proper time...'
+        }
+
+        time *= multiplier * 1000 // for converting to milliseconds
+
+        return time
+    },
+    /**
+     * Returns nicely formatted string that shows the remaining time, used for timers
+     * @param {number} remainingTime - milliseconds
+     */
+    getTimeStr(remainingTime) {
+        if (remainingTime >= 0) {
+    
+            let days = Math.floor(remainingTime / (1000 * 60 * 60 * 24))
+            let hours = Math.floor((remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+            let mins = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60))
+            let secs = Math.floor((remainingTime % (1000 * 60)) / 1000)
+    
+            let remainingStr = ''
+            
+            if(days) {
+                remainingStr += `${days} days${hours? ', ' + hours + ' hours' : ''}`
+            }
+            else if(hours > 12 ) {
+                remainingStr += `${hours} hours, ${mins} minutes`
+            }
+            else {
+                if(hours < 10) { hours = '0'+ hours}
+                if(mins < 10) { mins = '0'+ mins}
+                if(secs < 10) { secs = '0'+ secs}
+            
+                remainingStr += `${hours}:${mins}:${secs}`
+            }
+    
+            return remainingStr
+        }
+        else {
+            return 'No time left'
+        }
     },
 }

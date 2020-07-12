@@ -42,8 +42,10 @@ Sensitive tokens should be saved into Heroku Dashboard in Config Vars. In code t
 - DBNAME - Name of the database with these collections
 
 ## Database
+Bot uses MongoDB through Mongoose to save data about the server's configuration, user info and active requests and queues. A member can remove their data with a `clear` command.
 
 ### Server schema
+Server data can be removed with the command `reset`. This can only be done by server administrator(s).
 ```
 {
     serverID: String, // ID of the server, cannot be set by commands
@@ -55,6 +57,7 @@ Sensitive tokens should be saved into Heroku Dashboard in Config Vars. In code t
         pledger: String, // ID of role that can respond to requests
         queue: [String], // IDs of roles that use queues
         queuemod: [String], // IDs of roles that create queues
+        giveaway: [String], // IDs of roles that can start giveaways
     },
     requestTypes: [String], // an array of allowed requests
     queueCategory: String, // category to use for queues
@@ -78,6 +81,7 @@ Sensitive tokens should be saved into Heroku Dashboard in Config Vars. In code t
 ```
 
 ### User schema
+A user is shared across all servers. Setting this info will make it available on all servers where the bot is, although only the member themselves can use it. No one else can see this data unless the member joins a queue. If a member removes this data with the `clear` command, it will be deleted from all servers at once.
 ```
 { 
     userID: String, // ID of the Discord user
@@ -101,7 +105,17 @@ Sensitive tokens should be saved into Heroku Dashboard in Config Vars. In code t
 ```
 
 ## Queue system
-[TBA]
+Queues need a bit of setup: the server needs to have a category under which the bot will create the queue channels, and the server needs a channel where the queues infos will be posted.
+
+For clarity, the bot will only accept queue creation commands in the 'queue list channel'. This is because queues can be closed from the queue channels and the bot will only try to find the queue info message from the list channel. Once a queue is successfully created, the bot will create a new channel which only the bot, bot moderators and the host can see at first. Bot will create an info message about the queue in the list channel with a reaction counter.
+
+Members can join the queue by either using `join` command or by reacting to the queue info message. If the user has set their info, the bot will add the member to the queue's channel.
+
+Members can leave a queue, and if they do so before their turn, it will not be counted against the queue's capacity.
+
+The host is supposed to call `next` in the queue channel when they are ready for the next person. This will show the info of the next member in line. After a while the member will be kicked from the channel.
+
+The host can also `close` the queue whenever.
 
 # Manna in your server
 
@@ -111,6 +125,7 @@ Manna currently has the following features, which can be turned off by using `di
 
 * *donations* - use for requests for donations and donating, include commands like `request`, `donate`
 * *queues* - use to make special channels to wait in line for something, include commands like `create`, `join`, `set` (giving information to be used in queues)
+* *giveaways* - use to make giveaways, include commands like \`give\`, \`reroll\`
 
 #### Donations
 Requests have a type and amount/description.
@@ -135,15 +150,25 @@ Use `settype add/remove <type(s)>` to make these changes. Note that all types mu
 ### Queues
 A moderator needs to setup queue settings before the queues can be used in the server. This bot needs info about:
 * *queue category* - This is where all the new queue channels will appear. You can get the value of the category ID by right-clicking on the category title and selecting Copy ID.
-* *queue list channel* - This is where the bot will announce queues being created and ended.
+* *queue list channel* - This is the only channel where queues can be created. The bot will keep track of queues in info messages.
+Use `queuesetup` command to setup these.
 
 You can also set role restrictions on who can use the queues (see [roles](#Role-types))
 
 Queues are meant for special events, where there are many people wanting to do something and only a few can do it simultaneously. A queue will hold info on the order of participants (first come, first served) and the host can pick the next in line easyli with a command.
 
-For queues to work efficiently, all members who want to be added to a queue need to set their game info first.
+For queues to work efficiently, all members who want to be added to a queue need to set their game info first. They can do this by using `set <IGN> | <island>` command. A member can see their own info with `me` and delete their data from the bot by using `clear`.
 
 *Currently queue system only uses game information suitable for ACNH*
+
+### Giveaways
+You must specify the length of the giveaway and the amount of winners.
+*Time*: Specify time unit! Ex. 10s (10 seconds), 15m (15 minutes), 1d (one day)
+*Amount of winners*: give as a plain number. Ex. 1, 10, 50
+
+Others join the giveaway by reacting and once the giveaway ends, the bot will randomly choose a winner.
+
+The host or a moderator can end the giveaway at anytime using command `end <giveawayID>`. If the prize cannot be delivered for some reason, the host or a moderator can reroll a winner using command `reroll <giveawayID>`. Each reroll will get one new winner, so if you need to reroll multiple winners, then use the command as many times as needed.
 
 ## Server settings
 You can edit the following settings of the bot:

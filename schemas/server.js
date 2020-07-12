@@ -11,6 +11,7 @@ const serverSchema = new Schema({
         pledger: [String], // IDs of roles that can respond to requests
         queue: [String], // IDs of roles that use queues
         queuemod: [String], // IDs of roles that create queues
+        giveaway: [String], // IDs of roles that can start giveaways
     },
     requestTypes: [String], // an array of allowed requests
     queueCategory: String, // category to use for queues

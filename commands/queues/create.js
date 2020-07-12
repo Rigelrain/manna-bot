@@ -27,6 +27,10 @@ async function execute(message, args) {
         return reply.customError(message, 'Oops! Queues have not been setup yet!', `Someone needs to fix that first... See \`${message.prefix}help queuesetup\``)
     }
 
+    if(message.channel.id != message.queueChannel) {
+        return reply.customError(message, 'Oops! Wrong channel!', `You need to use ${message.guild.channels.cache.get(message.queueChannel)} to create queues`)
+    }
+
     // === Extract capacity
     const capacity = parseInt(args.pop())
     const queueName = args.join('-').toLowerCase()
@@ -116,16 +120,17 @@ async function execute(message, args) {
     collector.on('collect', (reaction, user) => {
         console.log(`Collected ${reaction.emoji.name} from ${user.tag}`)
         if(reaction.emoji.name == config.emojis.end) {
-            // end the collection, remove queue reactions
-            replymsg.reactions.cache.get(config.emojis.queue).remove().catch(error => console.log(`[ ERROR ] Failed to remove queue reactions: ${JSON.stringify(error)}`))
+            // end the collection
             collector.stop()
             return
         }
         join(queueName, message.prefix, message.queueChannel, user, message.guild)
     })
     
-    collector.on('end', collected => {
-        console.log(`[ DEBUG ] Queue ${queueName} Collected ${collected.size} items`)
+    collector.on('end', () => {
+        console.log(`[ DEBUG ] Queue ${queueName} ended.`)
+        //remove queue reactions
+        replymsg.reactions.cache.get(config.emojis.queue).remove().catch(error => console.log(`[ ERROR ] Failed to remove queue reactions: ${JSON.stringify(error)}`))
     })
 
     // === Save to DB

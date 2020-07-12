@@ -2,7 +2,7 @@ module.exports = {
     name: 'Manna',
     prefix: '!manna ', // default prefix
     // add all new features (command types) into this list
-    features: ['donations', 'queues'], 
+    features: ['donations', 'queues', 'giveaways'], 
     // add all new role types here
     roletypes: ['moderator', 'requester', 'pledger', 'queuemod', 'queue'],
     // presets for different games

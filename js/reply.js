@@ -1,18 +1,23 @@
 const Discord = require('discord.js')
 const config = require('../config/config')
+const helper = require('./helpers')
 
 module.exports= {
-    createEmbed(type, title, description, err) {
+    createEmbed(type, title, description, footer, err) {
         if(err) {
             console.log(`[ ERROR ] ${err}`)
         }
 
         const replyEmbed = new Discord.MessageEmbed()
-            .setColor(config.colors[type])
+            .setColor(type == 'random'? helper.getRandomColor() : config.colors[type])
             .setTitle(title? title : (type == 'error' ? 'Oops!' : 'Success!'))
         
         if(description) {
             replyEmbed.setDescription(description)
+        }
+
+        if(footer) {
+            replyEmbed.setFooter(footer)
         }
 
         return replyEmbed

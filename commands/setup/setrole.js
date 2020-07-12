@@ -94,7 +94,7 @@ async function execute(message, args) {
         await Server.findOneAndUpdate({serverID: message.guild.id}, { $pullAll: {[query]: roles} }, { upsert: true} ).exec()
     }
 
-    return reply.success(message, `${isAdd? 'Adding' : 'Removing'} ${roletype} is a success!`, `${isAdd? 'Added' : 'Removed'} following roles: ${roleNames.join(', ')}`, true)
+    return reply.success(message, `${isAdd? 'Adding' : 'Removing'} ${roletype} role is a success!`, `${isAdd? 'Added' : 'Removed'} following roles: ${roleNames.join(', ')}`, true)
 }
 
 module.exports = options
