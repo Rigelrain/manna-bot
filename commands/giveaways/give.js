@@ -145,7 +145,7 @@ async function execute(message, args) {
         giveaway.reactions.cache.get(config.emojis.giveaway).remove().catch(error => console.log(`[ ERROR ] Failed to remove giveaway reactions: ${JSON.stringify(error)}`))
 
         // === Save to DB for rerolls
-        joined = joined.map(user => user.id)
+        joined = joined? joined.map(user => user.id) : []
         Giveaway.create({
             serverID: message.guild.id,
             messageID: giveaway.id,
