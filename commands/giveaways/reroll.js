@@ -1,6 +1,5 @@
 const reply = require('../../js/reply')
 const helper = require('../../js/helpers')
-const config = require('../../config/config')
 const Giveaway = require('../../schemas/giveaway')
 
 /**
@@ -63,7 +62,7 @@ async function execute(message, args) {
 
     // send a new ping message
     // has to be sent as plain text for the pings to work
-    message.channel.send(`A new winner for **${giveaway.prize}** was rolled! ... And the lucky one is: <@${newWinner}>! Congrats! (Please contact <@${giveaway.host}> for your prize)`) 
+    message.channel.send(`A new winner for **${giveaway.prize}** was rolled! ... And the lucky one is: <@${newWinner}>! Congrats! (Please contact <@${giveaway.hostID}> for your prize)`) 
 
     message.delete({timeout: 5000})
 }

@@ -20,7 +20,8 @@ const options = {
     
     example: '3 warm hugs',
 
-    help: info.requests,
+    help: info.requests + 
+    'Type is loosely the unit of the request. If you request 3 hugs, the type is \'hugs\'. If you request passionate kiss, the type is \'kiss\'. By default you can use any type, but the server might choose to limit these to specific types of donations allowed on the server. The type has to be the last word in your command.\nThe amount is simple, it\'s simply the quantity of the requested item/service. If left blank, by default you are requesting one (1) item/service.\nYou can also give a description (quality). This is a free form text describing any details of your request.',
 
     roleRestrict: 'requester',
 

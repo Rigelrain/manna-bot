@@ -17,7 +17,8 @@ const options = {
     minArgs: 3,
     usage: '<add/remove> <roletype> <role>',
 
-    help: info.about_roles,
+    help: info.about_roles + 
+    'The admin can setup roles which can have bot moderator permissions, meaning that members with at least one of these roles can also edit bot settings. A bot moderator can setup specific roles which the member has to have in order to use other features. Each role type can have one or more roles specified.',
     
     example: 'moderator add @moderator',
 

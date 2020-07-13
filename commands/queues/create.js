@@ -4,6 +4,7 @@ const {getRandomColor} = require('../../js/helpers')
 const reply = require('../../js/reply')
 const Queue = require('../../schemas/queue')
 const join = require('../../js/queuejoin')
+const info = require('../../config/botinfo')
 
 const options = {
     type: 'queues',
@@ -13,6 +14,8 @@ const options = {
 
     usage: '<queue name> <capacity>',
     description: 'Creates a new queue with the given <queue name> and <capacity>.',
+
+    help: info.queues + 'The bot will keep track of queues in info messages.\nYou can also set role restrictions on who can use the queues (see about roles)',
 
     cooldown: 5,
     minArgs: 2,

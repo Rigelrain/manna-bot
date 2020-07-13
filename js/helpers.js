@@ -175,14 +175,10 @@ module.exports = {
      */
     parsetime(str) {
         let multiplier, time
-        // seconds
-        if(/seconds|sec|s$/i.test(str)) {
-            multiplier = 1
-            time = parseInt(str.replace(/sec|s$/i, ''))
-        }
-        else if(/minutes|min|mins|m$/i.test(str)) {
+        
+        if(/minutes|min|mins|m$/i.test(str)) {
             multiplier = 60
-            time = parseInt(str.replace(/min|m$/i, ''))
+            time = parseInt(str.replace(/minutes|min|mins|m$/i, ''))
         }
         else if(/hours|h$/i.test(str)) {
             multiplier = 3600
@@ -191,6 +187,11 @@ module.exports = {
         else if(/days|d$/i.test(str)){
             multiplier = 86400
             time = parseInt(str.replace(/days|d$/i, ''))
+        }
+        // seconds is last or else all that ends with 's' is seconds
+        else if(/seconds|sec|s$/i.test(str)) {
+            multiplier = 1
+            time = parseInt(str.replace(/seconds|sec|s$/i, ''))
         }
 
         if(!time || isNaN(time)) {

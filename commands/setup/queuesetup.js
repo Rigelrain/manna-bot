@@ -16,7 +16,7 @@ const options = {
     minArgs: 2,
     usage: '<category id> <channel>',
 
-    help: info.queues,
+    help: info.queues + 'The bot will keep track of queues in info messages.\nYou can also set role restrictions on who can use the queues (see about roles)',
     
     example: '123456789123456789 #examplechannel',
 
