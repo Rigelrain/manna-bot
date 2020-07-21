@@ -21,7 +21,7 @@ const options = {
     help: info.giveaways + 
     '\nA giveaway can be max 1 week long.\nThe host or a moderator can end the giveaway at anytime using command `end <giveawayID>`.\nIf the prize cannot be delivered for some reason, the host or a moderator can reroll a winner using command `reroll <giveawayID>` within 1 day. Each reroll will get one new winner, so if you need to reroll multiple winners, then use the command as many times as needed.',
     
-    example: '1day 1 virtual hug "A hug will be devileverd virtually"',
+    example: '1day 1 virtual hug "A hug will be delivered virtually"',
 
     roleRestrict: 'giveaway',
 
