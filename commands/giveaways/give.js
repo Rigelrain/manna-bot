@@ -16,12 +16,12 @@ const options = {
 
     description: 'Start a giveaway.',
     minArgs: 3,
-    usage: '<time> <amount of winners> <what to give>',
-
+    usage: '<time> <amount of winners> <what to give> ["Longer description in quotes"]',
+    
     help: info.giveaways + 
     '\nA giveaway can be max 1 week long.\nThe host or a moderator can end the giveaway at anytime using command `end <giveawayID>`.\nIf the prize cannot be delivered for some reason, the host or a moderator can reroll a winner using command `reroll <giveawayID>` within 1 day. Each reroll will get one new winner, so if you need to reroll multiple winners, then use the command as many times as needed.',
     
-    example: '1d 1 virtual hug',
+    example: '1day 1 virtual hug "A hug will be devileverd virtually"',
 
     roleRestrict: 'giveaway',
 
@@ -53,13 +53,18 @@ async function execute(message, args) {
     if(isNaN(amount) || amount < 1) {
         return reply.customError(message, 'Oops! Can\'t find the amount of winners...', `Usage: ${message.prefix}${options.name} ${options.usage}. Give the amount of winners as a plain number.`)
     }
-
-    const prize = args.join(' ')
+    
+    // === Get the prize and possible long description
+    let prize = args.join(' ')
+    const description = prize.split('"')[1]
+    if(description && description != '') {
+        prize = prize.split('"')[0]
+    }
 
     // === Giveaway info message
     const giveawayEmbed = reply.createEmbed('random', 
         '🎉 Giveaway 🎉', 
-        `Given by: ${message.author}\nWinners: ${amount}\n===\n*Prize*: ${prize}\n===\nReact with ${config.emojis.giveaway} to enter!`,
+        `Given by: ${message.author}\nWinners: ${amount}\n===\n*Prize*: ${prize}\n===${description? '\n' + description + '\n' : ''}\nReact with ${config.emojis.giveaway} to enter!`,
         `Time remaining: ${helper.getTimeStr(duration)}`)
     
     const giveaway = await message.channel.send(giveawayEmbed)
@@ -72,7 +77,7 @@ async function execute(message, args) {
     giveaway.react(config.emojis.giveaway)
     
     const collector = giveaway.createReactionCollector((reaction, user) => {
-        console.log('Collector fired!')
+        // console.log('Collector fired!')
         // only accept reactions:
         // - giveaway reaction from other users (NOT bot or the giveaway creator)
         // - end reaction from the bot only (so no one else can end it via reactions)

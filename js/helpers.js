@@ -180,11 +180,11 @@ module.exports = {
             multiplier = 60
             time = parseInt(str.replace(/minutes|min|mins|m$/i, ''))
         }
-        else if(/hours|h$/i.test(str)) {
+        else if(/hours|hour|h$/i.test(str)) {
             multiplier = 3600
             time = parseInt(str.replace(/hours|h$/i, ''))
         }
-        else if(/days|d$/i.test(str)){
+        else if(/days|day|d$/i.test(str)){
             multiplier = 86400
             time = parseInt(str.replace(/days|d$/i, ''))
         }
