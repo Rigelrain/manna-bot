@@ -146,12 +146,12 @@ Example2: `passionate kiss` --> will create a request: `@Manna requests 1 kiss! 
 
 Example3: `5 blue in a flower pot roses` --> will create a request: `@Manna requests 5 roses! Needs: blue in a flower pot`
 
-![Example request with description](image)
+![Example request with description](https://github.com/Rigelrain/manna-bot/blob/master/images/donation01.jpg?raw=true)
 
 **Donating to a request**
 Donations are done with command `donate (amount/all) @user`. With every donation the request is edited and progress is shown. When the request is fulfilled, the requester is notified by a DM containing info on all users who made a donation.
 
-![Fulfilled request](image)
+![Fulfilled request](https://github.com/Rigelrain/manna-bot/blob/master/images/donation01-fulfilled.jpg?raw=true)
 
 **Request types**
 By default members can request all kinds of items/services. This can be configured by adding specific types as allowed in the server.
@@ -174,7 +174,7 @@ For queues to work efficiently, all members who want to be added to a queue need
 
 Use command `create <queue name> <capacity>` to make a new queue. Others can join a queue by reacting to the queue message.
 
-![Example queue message](image)
+![Example queue message](https://github.com/Rigelrain/manna-bot/blob/master/images/queue01.jpg?raw=true)
 
 ### Giveaways
 You must specify the length of the giveaway and the amount of winners.
@@ -187,7 +187,7 @@ The host or a moderator can end the giveaway at anytime using command `end <give
 
 The host can also give a more detailed description of the giveaway or giveaway rules for example. Todo this, include the description inside double quotes in the give command: `give 1day 1 hug "This hug is given virtually and must be claimed within 24h or the prize will be rerolled."`
 
-![Giveaway with a description](image)
+![Giveaway with a description](https://github.com/Rigelrain/manna-bot/blob/master/images/giveaway01.jpg?raw=true)
 
 ## Server settings
 You can edit the following settings of the bot:
