@@ -10,7 +10,7 @@ const options = {
     type: 'queues',
 
     name: 'queuesetup',
-    aliases: ['queueset', 'qset'],
+    aliases: ['queueset', 'qset', 'setqueueinfo'],
 
     description: 'Add the queue category and main channel to bot settings. Needed before queues can be used!',
     minArgs: 2,

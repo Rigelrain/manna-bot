@@ -6,6 +6,8 @@ Discord.js bot for asking for donations/crowdfunding and pledging for them.
 ***[For Users](#Manna-in-your-server)***
 
 ## Setup
+After cloning the repository, use `npm install` to get all the needed 3rd party modules.
+
 Main file is `bot.js`.  `npm start` will start the bot.
 
 Configuration files are under `/config`. Note that local bot token and Mongo config should only be used in local development phase and are not suitable to be used if your bot is hosted in the cloud! You should never save this kind of sensitive data as a file in the cloud, only as process variables.
@@ -66,6 +68,8 @@ Server data can be removed with the command `reset`. This can only be done by se
 }
 ```
 
+A moderator can check current server settings by using command `getserver`.
+
 ### Request schema
 ```
 {
@@ -105,7 +109,7 @@ A user is shared across all servers. Setting this info will make it available on
 ```
 
 ## Queue system
-Queues need a bit of setup: the server needs to have a category under which the bot will create the queue channels, and the server needs a channel where the queues infos will be posted.
+Queues need a bit of setup: the server needs to have a category under which the bot will create the queue channels, and the server needs a channel where the queues infos will be posted. Use command `setqueueinfo` to setup.
 
 For clarity, the bot will only accept queue creation commands in the 'queue list channel'. This is because queues can be closed from the queue channels and the bot will only try to find the queue info message from the list channel. Once a queue is successfully created, the bot will create a new channel which only the bot, bot moderators and the host can see at first. Bot will create an info message about the queue in the list channel with a reaction counter.
 
@@ -127,7 +131,7 @@ Manna currently has the following features, which can be turned off by using `di
 * *queues* - use to make special channels to wait in line for something, include commands like `create`, `join`, `set` (giving information to be used in queues)
 * *giveaways* - use to make giveaways, include commands like \`give\`, \`reroll\`
 
-#### Donations
+### Donations
 Requests have a type and amount/description.
 
 Type is loosely the unit of the request. If you request 3 hugs, the type is 'hugs'. If you request passionate kiss, the type is 'kiss'. By default you can use any type, but the server might choose to limit these to specific types of donations allowed on the server. The type has to be the last word in your command.
@@ -141,6 +145,13 @@ Example1: `3 hugs` --> will create a request: `@Manna requests 3 hugs!`
 Example2: `passionate kiss` --> will create a request: `@Manna requests 1 kiss! Needs: passionate`
 
 Example3: `5 blue in a flower pot roses` --> will create a request: `@Manna requests 5 roses! Needs: blue in a flower pot`
+
+![Example request with description](image)
+
+**Donating to a request**
+Donations are done with command `donate (amount/all) @user`. With every donation the request is edited and progress is shown. When the request is fulfilled, the requester is notified by a DM containing info on all users who made a donation.
+
+![Fulfilled request](image)
 
 **Request types**
 By default members can request all kinds of items/services. This can be configured by adding specific types as allowed in the server.
@@ -161,6 +172,10 @@ For queues to work efficiently, all members who want to be added to a queue need
 
 *Currently queue system only uses game information suitable for ACNH*
 
+Use command `create <queue name> <capacity>` to make a new queue. Others can join a queue by reacting to the queue message.
+
+![Example queue message](image)
+
 ### Giveaways
 You must specify the length of the giveaway and the amount of winners.
 *Time*: Specify time unit! Ex. 10s (10 seconds), 15m (15 minutes), 1d (one day)
@@ -169,6 +184,10 @@ You must specify the length of the giveaway and the amount of winners.
 Others join the giveaway by reacting and once the giveaway ends, the bot will randomly choose a winner.
 
 The host or a moderator can end the giveaway at anytime using command `end <giveawayID>`. If the prize cannot be delivered for some reason, the host or a moderator can reroll a winner using command `reroll <giveawayID>`. Each reroll will get one new winner, so if you need to reroll multiple winners, then use the command as many times as needed.
+
+The host can also give a more detailed description of the giveaway or giveaway rules for example. Todo this, include the description inside double quotes in the give command: `give 1day 1 hug "This hug is given virtually and must be claimed within 24h or the prize will be rerolled."`
+
+![Giveaway with a description](image)
 
 ## Server settings
 You can edit the following settings of the bot:
@@ -190,6 +209,7 @@ By default, donations and queues can be used by anyone (@everyone role). A bot m
 * *pledger* - role(s) that can use `donate` command
 * *queuemod* - role(s) that can host queues, note that if *queue* role is set, then that will also act as a restriction to queuemod, if queuemod is not specifically set
 * *queue* - role(s) that can join queues
+* *giveaway* - role(s) that can create giveaways (participating in a giveaway is not restricted)
 
 Each role type can have one or more roles specified. So you can have multiple roles which can edit the bot, as well as request or pledge. You can add the same role into all the role types if you need to.
 

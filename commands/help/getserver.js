@@ -49,7 +49,9 @@ async function execute(message) {
     if(queuesEnabled) {
         detailStr += '\n'
         if(message.queueCategory) {
-            detailStr += '\nQueue channels will be added under: ' + message.guild.channels.cache.get(message.queueCategory).name
+            if(message.guild.channels.cache.get(message.queueCategory)) {
+                detailStr += '\nQueue channels will be added under: ' + message.guild.channels.cache.get(message.queueCategory).name
+            }
         }
         if(message.queueChannel) {
             detailStr += `\nQueues are listed in channel ${message.guild.channels.cache.get(message.queueChannel)}`
