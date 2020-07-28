@@ -10,8 +10,12 @@ const schema = new Schema({
     prize: String,
     hostID: String,
     users: [Mixed], // array of users who have joined the giveaway, but have not won
+    expires: Date,
+    amountOfWinners: Number,
+    ended: { type: Boolean, default: false },
 })
 
+schema.index({serverID: 1})
 schema.index({serverID: 1, messageID: 1})
 
 module.exports = mongoose.model('Giveaway', schema)

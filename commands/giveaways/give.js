@@ -3,6 +3,7 @@ const helper = require('../../js/helpers')
 const info = require('../../config/botinfo')
 const config = require('../../config/config')
 const Giveaway = require('../../schemas/giveaway')
+const end = require('../../js/giveawayend')
 
 /**
  * Start a giveaway
@@ -30,7 +31,6 @@ const options = {
 
 async function execute(message, args) { 
     // === Check that channel is correct
-    console.log(message.giveawayChannels)
     if(message.giveawayChannels 
         && message.giveawayChannels.length > 0
         && !message.giveawayChannels.includes(message.channel.id)) {
@@ -69,14 +69,26 @@ async function execute(message, args) {
     }
 
     // === Giveaway info message
-    const giveawayEmbed = reply.createEmbed('random', 
+    let giveawayEmbed = reply.createEmbed('random', 
         '🎉 Giveaway 🎉', 
         `Given by: ${message.author}\nWinners: ${amount}\n===\n*Prize*: ${prize}\n===${description? '\n' + description + '\n' : ''}\nReact with ${config.emojis.giveaway} to enter!`,
         `Time remaining: ${helper.getTimeStr(duration)}`)
     
     const giveaway = await message.channel.send(giveawayEmbed)
 
-    console.log(`[ INFO ] Created giveaway ${giveaway.id}`)
+    // === To Database
+    let giveawayData = await Giveaway.create({
+        serverID: message.guild.id,
+        channelID: message.channel.id,
+        messageID: giveaway.id,
+        hostID: message.author.id,
+        prize: prize,
+        users: [],
+        amountOfWinners: amount,
+        expires: Date.now() + duration,
+    })
+
+    console.log(`[ INFO ] Created giveaway msg ${giveaway.id}`)
 
     message.delete()
 
@@ -87,84 +99,58 @@ async function execute(message, args) {
         // console.log('Collector fired!')
         // only accept reactions:
         // - giveaway reaction from other users (NOT bot or the giveaway creator)
-        // - end reaction from the bot only (so no one else can end it via reactions)
         return (user != giveaway.author && user != message.author && reaction.emoji.name === config.emojis.giveaway) 
-            || (user == giveaway.author && reaction.emoji.name === config.emojis.end)
+        // || (user == giveaway.author && reaction.emoji.name === config.emojis.end)
     }, {time: duration})
 
     // === Setup timer
     const timer = setInterval(function() {
         const currentTime = Date.now()
         const remainingTime = endDate-currentTime
-        giveawayEmbed
-            .setFooter(`Time remaining: ${helper.getTimeStr(remainingTime)}`)
+        if(remainingTime < 0) {
+            clearInterval(timer)
+        }
+        else {
+            giveawayEmbed = giveaway.embeds[0]
+            if(giveawayEmbed.fields && giveawayEmbed.fields.length > 0) {
+                // there's a winner already, stop timer
+                clearInterval(timer)
+            }
+            else {
+                giveawayEmbed
+                    .setFooter(`Time remaining: ${helper.getTimeStr(remainingTime)}`)
 
-        giveaway.edit(giveawayEmbed)
-        
+                giveaway.edit(giveawayEmbed)
+            }
+        }
     }, 5000)
-
-    // === Variables for storing the winners and who joined
-    let joined, winners
     
     // === Reaction collector events
     collector.on('collect', (reaction, user) => {
         console.log(`[ DEBUG ] ${user.tag} joined giveaway`)
-        if(reaction.emoji.name == config.emojis.end) {
-            console.log('Ending triggered')
-            // end the giveaway
-            collector.stop()
-        }
     })
 
     collector.on('remove', (reaction, user) => {
         console.log(`[ DEBUG ] ${user.tag} left giveaway`)
     })
     
-    collector.on('end', collected => {
+    collector.on('end', async collected => {
+        // === Check that hasn't been ended manually yet
+        giveawayData = await Giveaway.findById(giveawayData._id, '_id ended').lean().exec()
+
+        if(giveawayData.ended) {
+            return
+        }
+
         console.log(`[ DEBUG ] Giveaway ${giveaway.id} ended, ${collected.size} joined`)
 
-        clearInterval(timer)
-
         const reaction = collected.get(config.emojis.giveaway)
-        let winnerList
+        let joined
         if(reaction && reaction.users) {
             joined = reaction.users.cache.filter(user => !user.bot)
-            //console.log(joined)
-            winners = joined.random(amount)
-            //console.log(winners)
-            winnerList = `${winners.join(', ')}`
-
-            // remove winners from the list who's still eligible
-            joined = joined.filter(user => !winners.includes(user))
-            //console.log(joined)
         }
 
-        // edit the message
-        giveawayEmbed
-            .setTitle('🎉 Giveaway OVER 🎉')
-            .setFooter('Giveaway ended')
-            .setTimestamp(Date.now())
-            .addField('Winners', !winnerList? 'No winners this time :(' : amount > 1 ? `... And the winners are!\n${winnerList}` : `... And the winner is! ${winnerList}`)
-
-        giveaway.edit(giveawayEmbed)
-
-        if(winnerList) {
-            let winnerStr = amount == 1 ? 'We have a winner!' : 'These lucky people have won!'
-            winnerStr += `\nThe **${prize}** goes to.... ${winnerList}! Congrats! (Please contact ${message.author} for your prize)`
-            message.channel.send(winnerStr) // has to be sent as plain text for the pings to work
-        }
-
-        giveaway.reactions.cache.get(config.emojis.giveaway).remove().catch(error => console.log(`[ ERROR ] Failed to remove giveaway reactions: ${JSON.stringify(error)}`))
-
-        // === Save to DB for rerolls
-        joined = joined? joined.map(user => user.id) : []
-        Giveaway.create({
-            serverID: message.guild.id,
-            messageID: giveaway.id,
-            hostID: message.author.id,
-            prize: prize,
-            users: joined,
-        })
+        end(giveawayData._id, joined, amount, giveaway, message.channel)
     })
 }
 
