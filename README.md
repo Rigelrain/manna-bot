@@ -1,5 +1,7 @@
 # Manna
 Discord.js bot for asking for donations/crowdfunding and pledging for them.
+Join the official [Discord server](https://discord.gg/vH3DJwP) for Rigelrain bots to get updates on what new features Manna gets, test the bot or report issues.
+[Invite Manna to your server](https://discord.com/api/oauth2/authorize?client_id=726711574030581840&permissions=268462160&scope=bot) for the fun!
 
 ***[For Developers](#Manna)***
 
