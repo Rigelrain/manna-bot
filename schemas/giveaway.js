@@ -15,7 +15,7 @@ const schema = new Schema({
     ended: { type: Boolean, default: false },
 })
 
-schema.index({serverID: 1})
+schema.index({serverID: 1, ended: 1}, {partialFilterExpression: {ended: false}})
 schema.index({serverID: 1, messageID: 1})
 
 module.exports = mongoose.model('Giveaway', schema)

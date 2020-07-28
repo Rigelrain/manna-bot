@@ -16,7 +16,7 @@ const options = {
 
     description: 'End a giveaway. You can get the ID of the giveaway by right-clicking the giveaway message.',
     minArgs: 1,
-    usage: '<giveaway message ID>',
+    usage: '<giveaway message ID> [channel ID]',
     
     example: '123456789123456789',
 
@@ -25,8 +25,22 @@ const options = {
     cooldown: 2,
 }
 
-async function execute(message, args) { 
-    const giveawayMsg = await message.channel.messages.fetch(args[0])
+/**
+ * 
+ * @param {*} message - Discord message object
+ * @param {*} args - arguments given in the command
+ * @param {boolean} deleteCommand - this is ONLY given as true if this function is called internally from cleangiveaways
+ */
+async function execute(message, args, keepCommand) { 
+    console.log(`[ DEBUG ] Manual giveaway end called with args: ${args}`)
+    let giveawayMsg, channel
+    if(args[1]) {
+        channel = await message.guild.channels.cache.get(args[1])
+    }
+    else {
+        channel = message.channel
+    }
+    giveawayMsg = await channel.messages.fetch(args[0])
 
     if(!giveawayMsg) {
         return reply.customError(message, 'Oops! Couldn\'t get that giveaway...', 'Get the giveaway ID by right-clicking the giveaway message and selecting Copy ID.')
@@ -55,9 +69,11 @@ async function execute(message, args) {
         }
 
         // === end the giveaway
-        end(giveaway._id, joined, giveaway.amountOfWinners, giveawayMsg, message.channel)
+        end(giveaway._id, joined, giveaway.amountOfWinners, giveawayMsg, channel)
 
-        message.delete({timeout: 5000})
+        if(!keepCommand) {
+            message.delete({timeout: 5000})
+        }
     }
     else {
         return reply.customError(message, 'Hmm... Doesn\'t look like your own giveaway...', 'You can only cancel giveaways that are your own, unless you\'re a moderator.')
