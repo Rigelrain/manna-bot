@@ -19,7 +19,7 @@ const options = {
     usage: '<time> <amount of winners> <what to give> ["Longer description in quotes"]',
     
     help: info.giveaways + 
-    '\nA giveaway can be max 1 week long.\nThe host or a moderator can end the giveaway at anytime using command `end <giveawayID>`.\nIf the prize cannot be delivered for some reason, the host or a moderator can reroll a winner using command `reroll <giveawayID>` within 1 day. Each reroll will get one new winner, so if you need to reroll multiple winners, then use the command as many times as needed.',
+    '\nA giveaway can be max 1 week long.\nA moderator can limit the use of this command to specific channels with the `setgiveaway <channel1> [channel2] [channel3...]` command.\nThe host or a moderator can end the giveaway at anytime using command `end <giveawayID>`.\nIf the prize cannot be delivered for some reason, the host or a moderator can reroll a winner using command `reroll <giveawayID>` within 1 day. Each reroll will get one new winner, so if you need to reroll multiple winners, then use the command as many times as needed.',
     
     example: '1day 1 virtual hug "A hug will be delivered virtually"',
 
@@ -29,6 +29,13 @@ const options = {
 }
 
 async function execute(message, args) { 
+    // === Check that channel is correct
+    console.log(message.giveawayChannels)
+    if(message.giveawayChannels 
+        && message.giveawayChannels.length > 0
+        && !message.giveawayChannels.includes(message.channel.id)) {
+        return reply.customError(message, 'You cannot use that command here, sorry!')
+    }
 
     // === Get time
     let duration

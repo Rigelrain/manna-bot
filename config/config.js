@@ -7,7 +7,7 @@ module.exports = {
     roletypes: ['moderator', 'requester', 'pledger', 'queuemod', 'queue'],
     // presets for different games
     reqtypePresets: {
-        'Animal Crossing': ['bells', 'nmt', 'nmts', 'flowers', 'stacks', 'star-frags', 'item'],
+        'Animal Crossing': ['bells', 'nmt', 'nmts', 'flower', 'flowers', 'stack', 'stacks', 'star-frag','star-frags', 'item', 'items', 'painting', 'paintings', 'statue', 'statues', 'fossil', 'fossils'],
     },
     colors: {
         success: '#baf7bc',

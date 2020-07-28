@@ -5,6 +5,7 @@ const Mixed = mongoose.Mixed
 // giveaways are stored in DB for a while for allowing rerolls
 const schema = new Schema({
     serverID: {type: String, required: true},
+    channelID: String, // where the giveaway message is
     messageID: String, // message ID of the giveaway
     prize: String,
     hostID: String,

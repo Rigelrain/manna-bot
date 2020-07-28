@@ -17,6 +17,7 @@ const serverSchema = new Schema({
     queueCategory: String, // category to use for queues
     queueChannel: String, // channel where queue messages should go
     queueMsg: String, // message that is added in every queue channel
+    giveawayChannels: [String], // IDs of channels where give command is enabled
 })
 
 serverSchema.index({serverID: 1})
