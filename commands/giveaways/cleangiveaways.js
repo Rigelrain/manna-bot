@@ -1,6 +1,7 @@
 const reply = require('../../js/reply')
 const Giveaway = require('../../schemas/giveaway')
 const end = require('./end').execute
+const cleanup = require('../../js/giveawaycleanup')
 
 /**
  * End expired giveaways and purge old giveaways from DB
@@ -35,9 +36,9 @@ async function execute(message) {
 
     await Promise.all(endables)
 
-    // TODO delete very old giveaways from DB
-
     reply.success(message, 'Old giveaways have been ended!')
+
+    cleanup()
 }
 
 module.exports = options

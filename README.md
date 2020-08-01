@@ -67,6 +67,7 @@ Server data can be removed with the command `reset`. This can only be done by se
     queueCategory: String, // category to use for queues
     queueChannel: String, // channel where queue messages should go
     queueMsg: String, // message that is added in every queue channel
+    giveawayChannels: [String], // IDs of channels where give command is enabled
 }
 ```
 
@@ -78,11 +79,9 @@ A moderator can check current server settings by using command `getserver`.
     serverID: String, // ID of the server the request was made
     userID: String, // ID of the user who made the request
     messageID: String, // ID of the message of the request (bot-made)
-    request: {
-        type: String, // request type (allowed types can be set by server)
-        amount: Number, // how much needed total
-        remaining: Number, // how much is left unpledged
-    },
+    type: String, // request type (allowed types can be set by server)
+    amount: Number, // how much needed total
+    remaining: Number, // how much is left unpledged
 }
 ```
 
@@ -101,14 +100,32 @@ A user is shared across all servers. Setting this info will make it available on
 {
     serverID: String, // ID of the server where the queue was created
     channelID: String, // ID of the created queue channel
+    messageID: String, // message where queue was created, in queue list channel
     name: String,
     host: String, // user id of the host
-    capacity: Number, // total amount of people that the host allows in the queue
-    taken: {type: Number, default: 0}, // the amount of slots in queue that have been claimed
-    done: {type: Number, default: 0}, // amount of people who are done, and are not waiting anymore
+    capacity: {type: Number, default: 1, min: 1}, // total amount of people that the host allows in the queue
+    taken: {type: Number, default: 0, min: 0}, // the amount of slots in queue that have been claimed
+    done: {type: Number, default: 0, min: 0}, // amount of people who are done, and are not waiting anymore
     users: {type: [String], default: []},
 }
 ```
+
+### Giveaway schema
+```
+{
+    serverID: {type: String, required: true},
+    channelID: String, // where the giveaway message is
+    messageID: String, // message ID of the giveaway
+    prize: String,
+    hostID: String,
+    users: [Mixed], // array of users who have joined the giveaway, but have not won
+    expires: Date,
+    amountOfWinners: Number,
+    ended: { type: Boolean, default: false },
+}
+```
+
+Giveaways are indexed so that the DB is automatically cleaned of any giveaways where the expires is over 2 days old.
 
 ## Queue system
 Queues need a bit of setup: the server needs to have a category under which the bot will create the queue channels, and the server needs a channel where the queues infos will be posted. Use command `setqueueinfo` to setup.
@@ -190,6 +207,10 @@ The host or a moderator can end the giveaway at anytime using command `end <give
 The host can also give a more detailed description of the giveaway or giveaway rules for example. Todo this, include the description inside double quotes in the give command: `give 1day 1 hug "This hug is given virtually and must be claimed within 24h or the prize will be rerolled."`
 
 ![Giveaway with a description](https://github.com/Rigelrain/manna-bot/blob/master/images/giveaway01.jpg?raw=true)
+
+Some times the automatic roll of a winner won't happen, for example when the bot has been restarted due to an update. In these cases you can use command `cleangiveaways` to roll a winner for all giveaways that have exceeded their duration.
+
+A moderator can use command `setgiveaway add <channel>` to limit the use of giveaways to the given channel(s) (you can mention many channels with one command). If you want to remove a channel from the list of allowed channels, use `setgiveaway remove <channel>`.
 
 ## Server settings
 You can edit the following settings of the bot:

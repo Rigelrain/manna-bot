@@ -153,10 +153,3 @@ client.login(token)
 
 // catch and log promise rejections
 process.on('unhandledRejection', error => console.error('Uncaught Promise Rejection', error))
-
-// TODO list:
-/**
- * - add possibility to limit the amount of requests per day per user
- * - add a system to create queue member infos dynamically
- * - make a converter for '1mil' '1,000,000' etc numbers 
- */

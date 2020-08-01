@@ -17,5 +17,6 @@ const schema = new Schema({
 
 schema.index({serverID: 1, ended: 1}, {partialFilterExpression: {ended: false}})
 schema.index({serverID: 1, messageID: 1})
+schema.index({expires: 1}, { expireAfterSeconds: 172800 }) // 2 days after expires
 
 module.exports = mongoose.model('Giveaway', schema)
