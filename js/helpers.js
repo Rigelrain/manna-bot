@@ -95,6 +95,15 @@ module.exports = {
                 roleMatch = true
             }
             break
+        case 'notice':
+            if(!roles 
+                || !roles.notice 
+                || roles.notice.length == 0
+                || member.roles.cache.some(r => roles.notice.includes(r.id))) {
+                //console.log('[ DEBUG ] Allowing access for queue.')
+                roleMatch = true
+            }
+            break
         default:
             console.log(`[ ERROR ] Invalid role ${role} being checked.`)
             break

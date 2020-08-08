@@ -1,6 +1,6 @@
 {
   "name": "manna",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Discord.js bot for asking for donations/crowdfunding and pledging for them.",
   "main": "bot.js",
   "scripts": {
