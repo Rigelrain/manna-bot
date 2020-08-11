@@ -8,8 +8,8 @@ const Server = require('../../schemas/server')
 const options = {
     noticeType: 'notices',
 
-    name: 'setnotice',
-    aliases: ['noticesetup', 'nset', 'setnoticenoticeType'],
+    name: 'setnoticeboard',
+    aliases: ['announcementsetup', 'nset', 'setannouncement'],
 
     description: 'Add noticeType of notice with a channel where announcements of this noticeType should go. Give a "default" noticeType ',
     minArgs: 2,

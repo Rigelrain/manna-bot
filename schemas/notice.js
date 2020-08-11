@@ -5,6 +5,7 @@ const schema = new Schema({
     serverID: {type: String, required: true},
     channelID: String, // channel where notice is
     messageID: String, // messageID of the notice
+    host: String, // used to verify that only host+mods can remove
     expires: Date, // when notice should be removed from DB
 })
 

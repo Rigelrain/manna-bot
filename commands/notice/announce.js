@@ -1,5 +1,5 @@
 const reply = require('../../js/reply')
-//const info = require('../../config/botinfo')
+const info = require('../../config/botinfo')
 const Notice = require('../../schemas/notice')
 
 /**
@@ -16,7 +16,7 @@ const options = {
     minArgs: 1,
     usage: '[type] ["notice title"] <announcement message>',
     
-    help: 'Sending a notice will send a formatted notice message to a specific channel dedicated for the announcements. By default the full message will be sent in the notification. If you want only a portion to be sent, use double quotes (ex. `info "This is notice!" This is some other text`) to show which part of the message should be sent as an announcement.\nIf no type is given (or it doesn\'t match any that is setup for the server) then the announcement will be sent to a default noticeboard channel, if it setup for the server (with type default).',
+    help: info.notices,
     
     example: 'info This is a notice!',
 
@@ -40,7 +40,6 @@ async function execute(message, args) {
         type = temptype[0]
     }
 
-    console.log(type)
     let typeInfo = message.notices.find(x => x.name === type)
     if (!typeInfo) {
         // check if there's a default channel
@@ -83,6 +82,7 @@ async function execute(message, args) {
         serverID: message.guild.id,
         channelID: sendChannel.id,
         messageID: notice.id,
+        host: message.author.id,
         expires: Date.now() + 86400, // default 1 day
     })
 
