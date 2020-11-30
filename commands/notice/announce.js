@@ -1,6 +1,7 @@
 const reply = require('../../js/reply')
 const info = require('../../config/botinfo')
 const Notice = require('../../schemas/notice')
+const {getOptions} = require('../../js/helpers')
 
 /**
  * Add an announcement
@@ -14,11 +15,11 @@ const options = {
 
     description: 'Send an announcement to noticeboard.',
     minArgs: 1,
-    usage: '[type] ["notice title"] <announcement message>',
+    usage: '[<options>] [type] ["notice title"] <announcement message>',
     
     help: info.notices,
     
-    example: 'info This is a notice!',
+    example: '--nolink info This is a notice!',
 
     roleRestrict: 'notice',
 
@@ -26,9 +27,6 @@ const options = {
 }
 
 async function execute(message, args) { 
-    // === Get expiration time
-    // TODO add from give command
-
     // === Get the channel where to post
     if(!message.notices || message.notices.length == 0) {
         return reply.customError(message, 'I don\'t know where to post that...', 'This server needs to setup a channel where to post announcements', null, true)
@@ -62,7 +60,12 @@ async function execute(message, args) {
         return reply.customError(message, 'I can\'t find the channel where to post...', `The channel meant for ${type} announcements isn't where it's supposed to be. Please have a moderator setup this announcement type again.`, null, true)
     }
 
-    // === Get the notice info
+    // === Get options
+    const opts = getOptions(args, ['--nolink', '--noembed'])
+    args = args.filter(x => !opts.includes(x))
+    //console.log(opts)
+    // === Get expiration time
+    // TODO add from give command
 
     // === Get the possible short title
     let msg = args.join(' ')
@@ -74,11 +77,20 @@ async function execute(message, args) {
     console.log(`[ DEBUG ] Sending msg ${msg} to channel: ${sendChannel.id}`)
 
     // === Notice message
-    let noticeEmbed = reply.createEmbed('random', 
-        `📨 ${type.toUpperCase()} 📨`, 
-        `Announcement from ${message.author}:\n${msg}\nGo to channel ${message.channel} to see what it's all about!`)
+    const titleTxt = `📨 ${type.toUpperCase()} 📨`
+    let bodyTxt = `Announcement from ${message.author}:\n${msg}`
+    if(!opts.includes('--nolink')) {
+        bodyTxt += `\nGo to channel ${message.channel} to see what it's all about!`
+    }
+    let noticeMsg 
+    if(opts.includes('--noembed')) {
+        noticeMsg = `${titleTxt}\n${bodyTxt}`
+    }
+    else {
+        noticeMsg = reply.createEmbed('random', titleTxt, bodyTxt)
+    }
     
-    const notice = await sendChannel.send(noticeEmbed)
+    const notice = await sendChannel.send(noticeMsg)
 
     // === To Database
     await Notice.create({
@@ -86,7 +98,7 @@ async function execute(message, args) {
         channelID: sendChannel.id,
         messageID: notice.id,
         host: message.author.id,
-        expires: Date.now() + 86400, // default 1 day
+        expires: Date.now() + 86400 * 1000, // default 1 day
     })
 
     console.log(`[ INFO ] Created announcement msg ${notice.id}`)

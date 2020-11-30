@@ -143,6 +143,7 @@ module.exports = {
      * Gets the channel names from guild and returns them as a neat list
      * @param {*} message - Discord API message object
      * @param {string[]} channels - array of channelsIDs
+     * @returns {string} channel names as a comma-separated list
      */
     returnChannelNames(message, channels) {
         const chanArr = []
@@ -162,6 +163,7 @@ module.exports = {
      * Checks whether a feature is allowed in the server
      * @param {*} message - Discord API message object
      * @param {string} feature - feature to be checked
+     * @returns {boolean}
      */
     checkFeature(message, feature) {
         let featureMatch = true
@@ -170,12 +172,33 @@ module.exports = {
 
         return featureMatch
     },
+    /**
+     * Gathers options from args array
+     * @param {string[]} args - all message input where the options might be
+     * @param {string[]} [allowed] - which options to allow, can be omitted
+     * @returns {string[]} all found options in an array
+     */
+    getOptions(args, allowed) {
+        const options = args.filter(x => /^--/.test(x) && (!allowed || allowed.includes(x)))
+        return options
+    },
+    /**
+     * Used by commands that need to know if something is going to be added or removed to/from database.
+     * @param {string} raw 
+     * @returns {boolean} true = add, false = remove
+     * @throws {string} 'Do you want to add or remove?'
+     */
     checkIsAdd(raw) {
         if(raw == 'add') return true
         if(raw == 'remove') return false
 
         throw 'Do you want to add or remove?'
     },
+    /**
+     * Used by donation progress bars
+     * @param {number} current 
+     * @param {number} max 
+     */
     getProgress(current, max) {
         if(max == 0) return '' // divide by zero guard
         const progress = (current / max ) * 10
@@ -191,6 +214,9 @@ module.exports = {
 
         return progressStr
     },
+    /**
+     * Randomize the color of an embed
+     */
     getRandomColor() {
         const index = Math.floor(Math.random() * config.colors.random.length)
         return config.colors.random[index]

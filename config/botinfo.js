@@ -41,7 +41,10 @@ Example3:
 *Time*: Specify time unit! Ex. 10s (10 seconds), 15m (15 minutes), 2h (two hours), 1d (one day)
 *Amount of winners*: give as a plain number. Ex. 1, 10, 50
 Others join the giveaway by reacting and once the giveaway ends, the bot will randomly choose a winner.`,
-    notices: 'Sending a notice will send a formatted notice message to a specific channel dedicated for the announcements. By default the full message will be sent in the notification. If you want only a portion to be sent, use double quotes (ex. `info "This is notice!" This is some other text`) to show which part of the message should be sent as an announcement.\nIf no type is given (or it doesn\'t match any that is setup for the server) then the announcement will be sent to a default noticeboard channel, if it setup for the server (with type default).',
+    notices: 'Sending a notice will send a formatted notice message to a specific channel dedicated for the announcements. By default the full message will be sent in the notification. If you want only a portion to be sent, use double quotes (ex. `info "This is notice!" This is some other text`) to show which part of the message should be sent as an announcement.\nIf no type is given (or it doesn\'t match any that is setup for the server) then the announcement will be sent to a default noticeboard channel, if it\'s setup for the server (with type default).' + 
+    '\nUtilize options:' + 
+    '\n--nolink --> there will be no link to the original announcement in the announcement, ideal for general announcements' + 
+    '\n--noembed --> announcement will be made as plain text instead of an embed',
     other_notes: `General use instructions:
 - It's best practice to give the bot some specific role that you can use to limit the channels the bot can use. Ex. make a Manna role that can only access channel #donations.
 - Bot needs *at least* 'Read messages', 'Send messages', 'Manage messages', 'Manage roles', 'Manage channels' permissions for the channel(s) it is supposed to operate in. The manage messages is needed so that the bot can delete the command messages (to keep the channel cleaner) and edit past donations. The manage roles and channels is used for creating and deleting the queue channels and adding people to them.
