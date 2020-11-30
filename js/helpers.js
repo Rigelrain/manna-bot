@@ -18,24 +18,20 @@ module.exports = {
         //console.log(`[ DEBUG ] server roles are: ${JSON.stringify(roles)}`)
 
         let roleMatch = false
+        const isMod = roles && roles.moderator && roles.moderator.length > 0 && member.roles.cache.some(r => roles.moderator.includes(r.id))
 
         switch(role) {
         case 'admin':
             // will check below if the user is admin
             break
         case 'moderator':
-            if(roles 
-                && roles.moderator
-                && roles.moderator.length > 0
-                && member.roles.cache.some(r => roles.moderator.includes(r.id))) {
-                // Check if they have one of many roles
-                // has one of the roles
+            if(isMod) {
                 //console.log('[ DEBUG ] User is a moderator.')
                 roleMatch = true
             }
             break
         case 'requester':
-            if(!roles 
+            if(isMod || !roles 
                 || !roles.requester 
                 || roles.requester.length == 0
                 || member.roles.cache.some(r => roles.requester.includes(r.id))) {
@@ -44,7 +40,7 @@ module.exports = {
             }
             break
         case 'pledger':
-            if(!roles 
+            if(isMod || !roles 
                 || !roles.pledger 
                 || roles.pledger.length == 0
                 || member.roles.cache.some(r => roles.pledger.includes(r.id))) {
@@ -58,7 +54,8 @@ module.exports = {
                 roleMatch = true
                 break
             }
-            if(roles.queuemod 
+            // allow for mods
+            if(isMod || roles.queuemod 
                 && roles.queuemod.length > 0
                 && !member.roles.cache.some(r => roles.queuemod.includes(r.id))) {
                 roleMatch = false
@@ -78,7 +75,7 @@ module.exports = {
             } */
             break
         case 'queue':
-            if(!roles 
+            if(isMod || !roles 
                 || !roles.queue 
                 || roles.queue.length == 0
                 || member.roles.cache.some(r => roles.queue.includes(r.id))) {
@@ -87,7 +84,7 @@ module.exports = {
             }
             break
         case 'giveaway':
-            if(!roles 
+            if(isMod || !roles 
                 || !roles.giveaway 
                 || roles.giveaway.length == 0
                 || member.roles.cache.some(r => roles.giveaway.includes(r.id))) {
@@ -96,7 +93,7 @@ module.exports = {
             }
             break
         case 'notice':
-            if(!roles 
+            if(isMod || !roles 
                 || !roles.notice 
                 || roles.notice.length == 0
                 || member.roles.cache.some(r => roles.notice.includes(r.id))) {
