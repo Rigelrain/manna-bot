@@ -179,8 +179,7 @@ module.exports = {
      * @returns {string[]} all found options in an array
      */
     getOptions(args, allowed) {
-        const options = args.filter(x => /^--/.test(x) && (!allowed || allowed.includes(x)))
-        return options
+        return args.filter(x => /^--/.test(x) && (!allowed || allowed.includes(x.split('=')[0])))
     },
     /**
      * Used by commands that need to know if something is going to be added or removed to/from database.

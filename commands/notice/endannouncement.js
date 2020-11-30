@@ -24,7 +24,7 @@ const options = {
 }
 
 async function execute(message, args) { 
-    console.log('[ DEBUG ] Manual removal of an annoucement...')
+    console.log('[ DEBUG ] Manual removal of an announcement...')
 
     // === Get the announcement
     const notice = await Notice.findOne({serverID: message.guild.id, messageID: args[0]}).lean().exec()

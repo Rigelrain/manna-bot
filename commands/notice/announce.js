@@ -1,7 +1,7 @@
 const reply = require('../../js/reply')
 const info = require('../../config/botinfo')
 const Notice = require('../../schemas/notice')
-const {getOptions} = require('../../js/helpers')
+const {getOptions, parsetime} = require('../../js/helpers')
 
 /**
  * Add an announcement
@@ -61,11 +61,23 @@ async function execute(message, args) {
     }
 
     // === Get options
-    const opts = getOptions(args, ['--nolink', '--noembed'])
+    const opts = getOptions(args, ['--nolink', '--noembed', '--infinite', '--duration'])
     args = args.filter(x => !opts.includes(x))
     //console.log(opts)
     // === Get expiration time
-    // TODO add from give command
+    let duration = opts.find(x => /^--duration/.test(x))
+    if(duration) {
+        try {
+            duration = parsetime(duration.replace(/^--duration=/, ''))
+        }
+        catch(e) {
+            return reply.customError(message, e, 'If you give a --duration option, you should give the time in seconds, minutes, hours or days. Ex. --duration=1day, --duration=4hours, --duration=15min etc.')
+        }
+    }
+    else {
+        duration = 86400 * 1000 // default 1 day
+    }
+    //console.log(duration)
 
     // === Get the possible short title
     let msg = args.join(' ')
@@ -81,6 +93,7 @@ async function execute(message, args) {
     let bodyTxt = `Announcement from ${message.author}:\n${msg}`
     if(!opts.includes('--nolink')) {
         bodyTxt += `\nGo to channel ${message.channel} to see what it's all about!`
+        // Cannot delete the bot activation message, since it needs to stay in the channel where it was sent. It might have additional info for discussion
     }
     let noticeMsg 
     if(opts.includes('--noembed')) {
@@ -93,17 +106,55 @@ async function execute(message, args) {
     const notice = await sendChannel.send(noticeMsg)
 
     // === To Database
-    await Notice.create({
-        serverID: message.guild.id,
-        channelID: sendChannel.id,
-        messageID: notice.id,
-        host: message.author.id,
-        expires: Date.now() + 86400 * 1000, // default 1 day
+    if(!opts.includes('--infinite')) {
+        await Notice.create({
+            serverID: message.guild.id,
+            channelID: sendChannel.id,
+            messageID: notice.id,
+            host: message.author.id,
+            expires: Date.now() + duration, 
+        })
+        console.log(`[ INFO ] Created announcement msg ${notice.id} to DB`)
+
+        notice.delete({timeout: duration})
+    }
+
+    // === Cleanup possible old notices
+    await cleanNotices(message)
+
+    if(opts.includes('--nolink')) {
+        // in this case it is assumed the original message can be deleted
+        message.delete({timeout: 1000})
+    }
+}
+
+async function cleanNotices(message) {
+    const notices = await Notice.find({ serverID: message.guild.id, expires: {$lte: Date.now()}}, '_id messageID channelID').lean().exec()
+
+    if(!notices || notices.length === 0) {
+        console.log('[ INFO ] no notices to cleanup')
+        return
+    }
+
+    const endables = []
+
+    notices.forEach(notice => {
+        endables.push(removeNotice(message, notice))
     })
 
-    console.log(`[ INFO ] Created announcement msg ${notice.id}`)
+    await Promise.all(endables)
+}
 
-    // Cannot delete the bot activation message, since it needs to stay in the channel where it was sent. It might have additional info for discussion
+async function removeNotice(message, notice) {
+    // === Get the announcement
+    const channel = message.guild.channels.cache.get(notice.channelID)
+    const announcementMsg = await channel.messages.fetch(notice.messageID)
+
+    // === Delete msg
+    announcementMsg.delete()
+
+    // === Delete from DB
+    await Notice.findByIdAndDelete(notice._id)
 }
 
 module.exports = options
