@@ -30,6 +30,9 @@ async function execute(message, args) {
     // TODO add from give command
 
     // === Get the channel where to post
+    if(!message.notices || message.notices.length == 0) {
+        return reply.customError(message, 'I don\'t know where to post that...', 'This server needs to setup a channel where to post announcements', null, true)
+    }
     const temptype = args.shift().split('\n')
     let type
     if(temptype.length > 1) {

@@ -4,7 +4,7 @@ module.exports = {
     // add all new features (command types) into this list
     features: ['donations', 'queues', 'giveaways', 'notices'], 
     // add all new role types here
-    roletypes: ['moderator', 'requester', 'pledger', 'queuemod', 'queue'],
+    roletypes: ['moderator', 'requester', 'pledger', 'queuemod', 'queue', 'giveaway', 'notice'],
     // presets for different games
     reqtypePresets: {
         'Animal Crossing': ['bells', 'nmt', 'nmts', 'flower', 'flowers', 'stack', 'stacks', 'star-frag','star-frags', 'item', 'items', 'painting', 'paintings', 'statue', 'statues', 'fossil', 'fossils'],

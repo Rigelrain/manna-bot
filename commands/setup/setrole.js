@@ -49,7 +49,9 @@ async function execute(message, args) {
         requester - who can make requests
         pledger - who can offer to pledge
         queuemod - who can make queues
-        queue - who can join queues`)
+        queue - who can join queues
+        giveaway - who can start giveaways
+        notice - who can make announcements`)
     } 
 
     // fetch the role

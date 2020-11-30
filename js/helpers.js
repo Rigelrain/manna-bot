@@ -91,7 +91,7 @@ module.exports = {
                 || !roles.giveaway 
                 || roles.giveaway.length == 0
                 || member.roles.cache.some(r => roles.giveaway.includes(r.id))) {
-                //console.log('[ DEBUG ] Allowing access for queue.')
+                //console.log('[ DEBUG ] Allowing access for giveaway.')
                 roleMatch = true
             }
             break
@@ -100,7 +100,7 @@ module.exports = {
                 || !roles.notice 
                 || roles.notice.length == 0
                 || member.roles.cache.some(r => roles.notice.includes(r.id))) {
-                //console.log('[ DEBUG ] Allowing access for queue.')
+                //console.log('[ DEBUG ] Allowing access for notice.')
                 roleMatch = true
             }
             break
@@ -119,7 +119,7 @@ module.exports = {
     },
     /**
      * Expects the roles object to be checked that it exists and that it contains the role to be checked. 
-     * There is no check for unfenied/null in this function
+     * There is no check for undefined/null in this function
      * @param {*} message - Discord API message object
      * @param {*} role - which role type to check
      * @param {*} roles - see /schemas/server.js
@@ -134,6 +134,25 @@ module.exports = {
                 roleArr.push(message.guild.roles.cache.get(roleID).name)
             })
             return roleArr.join(', ')
+        }
+        catch(e) {
+            return e.message
+        }
+    },
+    /**
+     * Gets the channel names from guild and returns them as a neat list
+     * @param {*} message - Discord API message object
+     * @param {string[]} channels - array of channelsIDs
+     */
+    returnChannelNames(message, channels) {
+        const chanArr = []
+
+        try {
+            channels.forEach(chanID => {
+                const channelName = message.guild.channels.cache.get(chanID)
+                chanArr.push(channelName)
+            })
+            return chanArr.join(', ')
         }
         catch(e) {
             return e.message

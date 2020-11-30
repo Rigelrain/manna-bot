@@ -1,4 +1,4 @@
-const {returnRoleNames} = require('../../js/helpers')
+const {returnRoleNames, returnChannelNames} = require('../../js/helpers')
 const reply = require('../../js/reply')
 
 /**
@@ -33,6 +33,9 @@ async function execute(message) {
 
     const donationsEnabled = !(disabled && disabled.includes('donations'))
     const queuesEnabled = !(disabled && disabled.includes('queues'))
+    const giveawaysEnabled = !(disabled && disabled.includes('giveaways'))
+    const noticesEnabled = !(disabled && disabled.includes('notices'))
+
 
     // available request types
     if(donationsEnabled) {
@@ -60,6 +63,27 @@ async function execute(message) {
             detailStr += `\nQueue's will have an info message:
             ${message.queueMsg}`
         }
+    }
+
+    // add info about giveaways
+    if(giveawaysEnabled && message.giveawayChannels && message.giveawayChannels.length > 0) {
+        detailStr += '\n\nGiveaways can be started in channels: '
+        detailStr += returnChannelNames(message, message.giveawayChannels)
+    }
+
+    // add info about notices
+    if(noticesEnabled && message.notices && message.notices.length > 0) {
+        detailStr += '\n\nNotices are sent to following channels:'
+        let defaultNoticeStr
+        message.notices.forEach(noticeType => {
+            if(noticeType.name === 'default') {
+                defaultNoticeStr = `\n${message.notices.length > 1? '...and everything else' : 'everything'} -> ${message.guild.channels.cache.get(noticeType.channel)}`
+            }
+            else {
+                detailStr += `\n${noticeType.name} -> ${message.guild.channels.cache.get(noticeType.channel)}`
+            }
+        })
+        if(defaultNoticeStr) detailStr += defaultNoticeStr
     }
 
     //// add info about roles
@@ -107,6 +131,26 @@ async function execute(message) {
         detailStr += '\nCan join a queue: '
         if(message.roles && message.roles.queue && message.roles.queue.length > 0) {
             detailStr += returnRoleNames(message, 'queue', message.roles)
+        }
+        else {
+            detailStr += 'everyone'
+        }
+    }
+
+    if(giveawaysEnabled) {
+        detailStr += '\nCan start a giveaway: '
+        if(message.roles && message.roles.giveaway && message.roles.giveaway.length > 0) {
+            detailStr += returnRoleNames(message, 'giveaway', message.roles)
+        }
+        else {
+            detailStr += 'everyone'
+        }
+    }
+
+    if(noticesEnabled) {
+        detailStr += '\nCan make an annoucement: '
+        if(message.roles && message.roles.notice && message.roles.notice.length > 0) {
+            detailStr += returnRoleNames(message, 'notice', message.roles)
         }
         else {
             detailStr += 'everyone'

@@ -11,7 +11,7 @@ const options = {
     name: 'setnoticeboard',
     aliases: ['announcementsetup', 'nset', 'setannouncement'],
 
-    description: 'Add noticeType of notice with a channel where announcements of this noticeType should go. Give a "default" noticeType ',
+    description: 'Add a type of notices with a channel where announcements of this type should go. Give at least a "default" channel for all notices with no specific type.',
     minArgs: 2,
     usage: '<noticeType> <channel>',
     
